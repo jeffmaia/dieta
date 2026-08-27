@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="background:#F3F5EE !important;background-color:#F3F5EE !important">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<title>Plano alimentar de Jefferson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Archivo:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5EE;
+  --card:#FFFFFF;
+  --ink:#0F231A;
+  --ink-2:#3B4A40;
+  --muted:#6F7C71;
+  --verde:#2E6B4C;
+  --verde-soft:#E3EDE4;
+  --laranja:#C74E17;
+  --laranja-soft:#FBEADF;
+  --linha:#DBE2D6;
+  --linha-forte:#C2CDBC;
+  --r:14px;
+  --sheet-h:88vh;
+}
+:root{color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--paper)!important;min-height:100%}
+html,body{margin:0;padding:0}
+/* camada de fundo real, imune a css externo do container */
+#bg{
+  position:fixed;inset:-2px;background:var(--paper);z-index:0;pointer-events:none
+}
+.wrap{position:relative;z-index:1}
+body{
+  background:var(--paper)!important;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:64px;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+.mono{font-family:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.disp{font-family:"Fraunces","Iowan Old Style",Georgia,serif;font-optical-sizing:auto}
+
+/* ---------- topo ---------- */
+header{padding:26px 0 18px}
+.eyebrow{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verde);font-weight:600
+}
+h1{
+  font-family:"Fraunces",Georgia,serif;font-weight:700;
+  font-size:33px;line-height:1.06;margin:9px 0 0;letter-spacing:-.015em
+}
+.sub{color:var(--muted);font-size:13.5px;margin-top:7px}
+.stats{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
+.stat{
+  background:var(--card);border:1px solid var(--linha);border-radius:11px;
+  padding:9px 12px;flex:1 1 0;min-width:96px
+}
+.stat b{display:block;font-family:"DM Mono",monospace;font-size:19px;font-weight:500;line-height:1.2}
+.stat span{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+.flag{
+  margin-top:14px;background:var(--laranja-soft);border:1px solid #EFCDB6;
+  border-radius:12px;padding:12px 14px;font-size:13.5px;color:#6E3210;line-height:1.5
+}
+.flag b{font-weight:600}
+
+/* ---------- navegação de refeições ---------- */
+.nav{
+  position:sticky;top:0;z-index:30;background:var(--paper);background-color:var(--paper);
+  border-bottom:1px solid var(--linha);
+  margin:18px -16px 0;padding:9px 0
+}
+.nav-in{display:flex;gap:7px;overflow-x:auto;padding:0 16px;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid var(--linha-forte);background:var(--card);
+  border-radius:999px;padding:7px 13px;font-size:13px;font-weight:500;color:var(--ink-2);
+  cursor:pointer;white-space:nowrap;font-family:inherit
+}
+.chip .h{font-family:"DM Mono",monospace;font-size:11.5px;color:var(--muted);margin-left:5px}
+.chip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip[aria-current="true"] .h{color:#9FB3A4}
+
+/* ---------- trilha ---------- */
+.rail{position:relative;padding-top:26px}
+.rail::before{
+  content:"";position:absolute;left:56px;top:0;bottom:26px;
+  width:1px;background:var(--linha-forte)
+}
+.meal{position:relative;padding-left:78px;margin-bottom:26px;scroll-margin-top:64px}
+.time{
+  position:absolute;left:0;top:2px;width:48px;text-align:right;
+  font-family:"DM Mono",monospace;font-size:13px;color:var(--muted)
+}
+.dot{
+  position:absolute;left:51px;top:8px;width:11px;height:11px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--linha-forte)
+}
+.meal.now .dot{background:var(--laranja);border-color:var(--laranja)}
+.meal.now .time{color:var(--laranja);font-weight:500}
+
+.meal h2{
+  font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;
+  margin:0;letter-spacing:-.01em;line-height:1.15
+}
+.meta{
+  font-family:"DM Mono",monospace;font-size:11.5px;color:var(--muted);
+  margin-top:3px;letter-spacing:.02em
+}
+.badge-now{
+  display:inline-block;background:var(--laranja);color:#fff;border-radius:5px;
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;
+  padding:3px 7px;vertical-align:3px;margin-left:8px
+}
+.badge-next{
+  display:inline-block;background:var(--verde-soft);color:var(--verde);border-radius:5px;
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;
+  padding:3px 7px;vertical-align:3px;margin-left:8px
+}
+
+.items{
+  list-style:none;margin:12px 0 0;padding:0;
+  background:var(--card);border:1px solid var(--linha);border-radius:var(--r);overflow:hidden
+}
+.meal.now .items{border-color:var(--laranja);box-shadow:0 0 0 3px var(--laranja-soft)}
+.item{display:flex;align-items:flex-start;gap:10px;padding:12px 13px;border-top:1px solid var(--linha)}
+.item:first-child{border-top:none}
+.item-main{flex:1;min-width:0}
+.item-name{font-weight:500;font-size:15px;line-height:1.3}
+.item-qtd{font-family:"DM Mono",monospace;font-size:13px;color:var(--ink-2);margin-top:2px}
+.item-alt{font-size:12.5px;color:var(--muted);margin-top:2px}
+.item-note{
+  font-size:12px;color:var(--muted);margin-top:6px;padding-left:9px;
+  border-left:2px solid var(--linha-forte);line-height:1.45
+}
+.grp{
+  display:inline-block;margin-top:6px;background:var(--verde-soft);color:var(--verde);
+  border-radius:6px;padding:2px 7px;font-size:11px;font-weight:600;
+  font-family:"DM Mono",monospace;letter-spacing:.01em
+}
+.grp.warn{background:var(--laranja-soft);color:var(--laranja)}
+.swap{
+  flex:0 0 auto;border:1px solid var(--linha-forte);background:var(--paper);
+  border-radius:9px;width:38px;height:38px;cursor:pointer;
+  display:grid;place-items:center;color:var(--verde);margin-top:1px
+}
+.swap:active{background:var(--verde-soft)}
+.swap svg{width:17px;height:17px}
+.free{opacity:.72}
+.free .item-qtd{color:var(--muted)}
+
+/* marcador de agora na trilha */
+.nowmark{position:relative;padding-left:78px;margin:-8px 0 22px;height:16px}
+.nowmark::before{
+  content:"";position:absolute;left:47px;top:7px;width:19px;height:2px;background:var(--laranja)
+}
+.nowmark span{
+  position:absolute;left:78px;top:0;font-family:"DM Mono",monospace;font-size:11px;
+  color:var(--laranja);letter-spacing:.09em;text-transform:uppercase;font-weight:500
+}
+
+/* ---------- chás ---------- */
+.teas{margin-top:8px;padding-top:26px;border-top:1px solid var(--linha)}
+.teas h2{font-family:"Fraunces",Georgia,serif;font-size:21px;margin:0 0 3px}
+.teas p.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+.tea{background:var(--card);border:1px solid var(--linha);border-radius:var(--r);padding:12px 14px;margin-bottom:9px}
+.tea b{font-size:14.5px;font-weight:600}
+.tea p{margin:4px 0 0;font-size:13px;color:var(--ink-2);line-height:1.5}
+
+footer{margin-top:28px;padding:18px 0 8px;border-top:1px solid var(--linha);color:var(--muted);font-size:12.5px;line-height:1.6}
+
+/* ---------- folha de substituição ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(15,35,26,.42);opacity:0;pointer-events:none;
+  transition:opacity .22s ease;z-index:40;backdrop-filter:blur(2px)
+}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:var(--paper);border-radius:20px 20px 0 0;
+  max-height:var(--sheet-h);display:flex;flex-direction:column;
+  transform:translateY(101%);transition:transform .28s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 -8px 40px rgba(15,35,26,.18);
+  max-width:640px;margin:0 auto
+}
+.sheet.on{transform:translateY(0)}
+.grab{width:38px;height:4px;background:var(--linha-forte);border-radius:2px;margin:9px auto 0;flex:0 0 auto}
+.sheet-head{padding:12px 16px 11px;border-bottom:1px solid var(--linha);flex:0 0 auto}
+.sheet-head .from{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.sheet-head h3{font-family:"Fraunces",Georgia,serif;font-size:20px;margin:5px 0 0;line-height:1.2}
+.sheet-head .eq{font-family:"DM Mono",monospace;font-size:12.5px;color:var(--verde);margin-top:5px}
+.close{
+  position:absolute;right:12px;top:18px;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--linha-forte);background:var(--card);cursor:pointer;
+  display:grid;place-items:center;color:var(--ink-2);font-size:17px;line-height:1;font-family:inherit
+}
+.tools{padding:11px 16px;border-bottom:1px solid var(--linha);flex:0 0 auto;display:flex;gap:8px;align-items:center}
+.search{
+  flex:1;border:1px solid var(--linha-forte);background:var(--card);border-radius:10px;
+  padding:9px 12px;font-size:15px;font-family:inherit;color:var(--ink);min-width:0
+}
+.search::placeholder{color:var(--muted);opacity:1}
+.search:focus{outline:2px solid var(--verde);outline-offset:1px}
+.toggle{
+  flex:0 0 auto;border:1px solid var(--linha-forte);background:var(--card);border-radius:10px;
+  padding:9px 11px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit
+}
+.toggle[aria-pressed="true"]{background:var(--verde);border-color:var(--verde);color:#fff}
+.sheet-body{overflow-y:auto;padding:4px 16px 30px;-webkit-overflow-scrolling:touch}
+.subhead{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin:18px 0 7px
+}
+.opt{
+  display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--linha);
+  border-radius:11px;padding:11px 13px;margin-bottom:7px
+}
+.opt-main{flex:1;min-width:0}
+.opt-name{font-size:14.5px;font-weight:500;line-height:1.25}
+.opt-med{font-family:"DM Mono",monospace;font-size:12.5px;color:var(--muted);margin-top:2px}
+.opt-g{
+  font-family:"DM Mono",monospace;font-size:16px;font-weight:500;color:var(--verde);
+  flex:0 0 auto;text-align:right
+}
+.opt.atual{border-color:var(--verde);background:var(--verde-soft)}
+.opt.atual .opt-g{color:var(--verde)}
+.tag-atual{
+  font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;
+  color:var(--verde);margin-left:6px;vertical-align:1px
+}
+.opt-warn{font-size:11.5px;color:var(--laranja);margin-top:4px;line-height:1.4}
+.sheet-note{
+  background:var(--verde-soft);border-radius:11px;padding:11px 13px;font-size:12.5px;
+  color:#254F39;line-height:1.5;margin-top:14px
+}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:34px 10px}
+
+button:focus-visible,.chip:focus-visible{outline:2px solid var(--laranja);outline-offset:2px}
+@media (prefers-color-scheme:dark){
+  html,body{background:var(--paper)!important;color:var(--ink)}
+  #bg{background:var(--paper)}
+  .card,.stat,.items,.chip,.tea,.opt,.search,.toggle,.close{background:var(--card)}
+  .sheet{background:var(--paper)}
+  .swap{background:var(--paper)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (max-width:360px){
+  .meal{padding-left:66px}.rail::before{left:48px}.dot{left:43px}.time{width:40px}
+  h1{font-size:29px}
+}
+</style>
+</head>
+<body style="background:#F3F5EE !important;background-color:#F3F5EE !important">
+<div id="bg" aria-hidden="true" style="position:fixed;top:-4px;left:-4px;right:-4px;bottom:-4px;background:#F3F5EE !important;background-color:#F3F5EE !important;z-index:0;pointer-events:none"></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Cardápio modelo</div>
+  <h1>Plano alimentar<br>de Jefferson</h1>
+  <p class="sub">Prescrito por Gabriella de Freitas Braga, CRN 1 8575. Seis refeições, das 9h30 às 23h.</p>
+  <div class="stats">
+    <div class="stat"><b>2489</b><span>kcal por dia</span></div>
+    <div class="stat"><b>327</b><span>g de carboidrato</span></div>
+    <div class="stat"><b>6</b><span>refeições</span></div>
+  </div>
+  <div class="flag">
+    <b>Perfil ovolactovegetariano.</b> As opções com carne, peixe e frango foram escondidas das substituições. O único item do plano que precisa de troca é a carne do jantar. Toque no botão de troca ao lado dela para ver o equivalente.
+  </div>
+</header>
+
+<nav class="nav" aria-label="Ir para refeição"><div class="nav-in" id="nav"></div></nav>
+
+<main class="rail" id="rail"></main>
+
+<section class="teas">
+  <h2>Outras opções</h2>
+  <p class="lead">Chás liberados fora das refeições.</p>
+  <div id="teas"></div>
+</section>
+
+<footer>
+  Este artefato só reorganiza o que está nos dois PDFs da sua nutricionista, sem mudar quantidades. As substituições saem da lista oficial dela, calculadas proporcionalmente às porções de cada item. Qualquer ajuste que fuja disso vale conversar com a Gabriella.
+</footer>
+
+</div>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <div class="from" id="sheetFrom"></div>
+    <h3 id="sheetTitle"></h3>
+    <div class="eq" id="sheetEq"></div>
+    <button class="close" id="close" aria-label="Fechar">✕</button>
+  </div>
+  <div class="tools">
+    <input class="search" id="q" type="search" placeholder="Buscar alimento" autocomplete="off">
+    <button class="toggle" id="vegBtn" aria-pressed="true">Sem carne</button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</section>
+
+<script>
+/* o container as vezes injeta um tema escuro por cima. isto reescreve por ultimo. */
+(function pintarFundo(){
+  const P = '#F3F5EE';
+  const set = el => {
+    if(!el) return;
+    el.style.setProperty('background-color', P, 'important');
+    el.style.setProperty('background-image', 'none', 'important');
+    el.style.setProperty('color-scheme', 'light', 'important');
+  };
+  const aplicar = () => { set(document.documentElement); set(document.body); set(document.getElementById('bg')); };
+  aplicar();
+  document.addEventListener('DOMContentLoaded', aplicar);
+  window.addEventListener('load', aplicar);
+  [60, 300, 900].forEach(ms => setTimeout(aplicar, ms));
+})();
+
+const DATA = {
+ "plano": {
+  "titulo": "Plano alimentar de Jefferson Leonardo Maia Thiago",
+  "nutricionista": "Gabriella de Freitas Braga",
+  "crn": "CRN 1 8575",
+  "kcalTotal": 2489,
+  "refeicoes": [
+   {
+    "nome": "Café da manhã",
+    "hora": "9h30",
+    "min": 570,
+    "kcal": 554,
+    "carb": 63,
+    "itens": [
+     {
+      "nome": "Pão de forma",
+      "qtd": "4 fatias, 100 g",
+      "alt": "ou 2 pães franceses",
+      "grupo": "Pão",
+      "porcoes": 4,
+      "match": [
+       "Pão de forma"
+      ]
+     },
+     {
+      "nome": "Tomate com orégano",
+      "qtd": "À vontade",
+      "livre": true
+     },
+     {
+      "nome": "Ovos",
+      "qtd": "2 unidades",
+      "grupo": "Carne ou ovo",
+      "porcoes": 0.5,
+      "match": [
+       "Ovos de galinha"
+      ]
+     },
+     {
+      "nome": "Queijo mussarela",
+      "qtd": "2 fatias, 40 g",
+      "grupo": "Leite",
+      "porcoes": 2,
+      "match": [
+       "Mussarela"
+      ]
+     },
+     {
+      "nome": "Creatina",
+      "qtd": "5 g",
+      "suplemento": true
+     }
+    ]
+   },
+   {
+    "nome": "Almoço",
+    "hora": "13h30",
+    "min": 810,
+    "kcal": 421,
+    "carb": 62,
+    "itens": [
+     {
+      "nome": "Salada crua e mix de vegetais",
+      "qtd": "À vontade",
+      "alt": "sal e limão",
+      "livre": true
+     },
+     {
+      "nome": "Omelete",
+      "qtd": "2 ovos",
+      "grupo": "Carne ou ovo",
+      "porcoes": 0.5,
+      "match": [
+       "Ovos de galinha"
+      ]
+     },
+     {
+      "nome": "Arroz branco",
+      "qtd": "120 g",
+      "grupo": "Arroz",
+      "porcoes": 2,
+      "match": [
+       "Arroz branco cozido"
+      ]
+     },
+     {
+      "nome": "Feijão cozido",
+      "qtd": "2 colh. servir, 120 g",
+      "grupo": "Feijão",
+      "porcoes": 2,
+      "match": [
+       "Feijão cozido"
+      ]
+     },
+     {
+      "nome": "Uva",
+      "qtd": "144 g",
+      "grupo": "Fruta",
+      "porcoes": 1,
+      "match": [
+       "Uva itália"
+      ]
+     },
+     {
+      "nome": "Creatina",
+      "qtd": "5 g",
+      "suplemento": true
+     }
+    ]
+   },
+   {
+    "nome": "Lanche da tarde",
+    "hora": "15h30",
+    "min": 930,
+    "kcal": 361,
+    "carb": 48,
+    "itens": [
+     {
+      "nome": "Cuscuz ou tapioca",
+      "qtd": "46 g",
+      "grupo": "Pão",
+      "porcoes": 2,
+      "match": [
+       "Cuscuz de milho",
+       "Tapioca"
+      ]
+     },
+     {
+      "nome": "Queijo mussarela",
+      "qtd": "20 g",
+      "grupo": "Leite",
+      "porcoes": 1,
+      "match": [
+       "Mussarela"
+      ]
+     },
+     {
+      "nome": "Mamão",
+      "qtd": "150 g",
+      "grupo": "Fruta",
+      "porcoes": 1,
+      "match": [
+       "Mamão formosa"
+      ]
+     },
+     {
+      "nome": "Body Protein",
+      "qtd": "1 scoop",
+      "suplemento": true
+     }
+    ]
+   },
+   {
+    "nome": "Lanche 2",
+    "hora": "17h00",
+    "min": 1020,
+    "kcal": 426,
+    "carb": 61,
+    "itens": [
+     {
+      "nome": "Pão de forma",
+      "qtd": "2 fatias, 50 g",
+      "grupo": "Pão",
+      "porcoes": 2,
+      "match": [
+       "Pão de forma"
+      ]
+     },
+     {
+      "nome": "Queijo mussarela",
+      "qtd": "2 fatias, 40 g",
+      "grupo": "Leite",
+      "porcoes": 2,
+      "match": [
+       "Mussarela"
+      ]
+     },
+     {
+      "nome": "Banana",
+      "qtd": "1 unidade, 72 g",
+      "grupo": "Fruta",
+      "porcoes": 1,
+      "match": [
+       "Banana"
+      ]
+     },
+     {
+      "nome": "Mel",
+      "qtd": "15 g",
+      "grupo": "Açúcar",
+      "porcoes": 1,
+      "match": [
+       "Mel"
+      ]
+     },
+     {
+      "nome": "Creatina",
+      "qtd": "5 g",
+      "suplemento": true
+     }
+    ]
+   },
+   {
+    "nome": "Jantar",
+    "hora": "21h00",
+    "min": 1260,
+    "kcal": 332,
+    "carb": 50,
+    "itens": [
+     {
+      "nome": "Salada crua e mix de vegetais",
+      "qtd": "À vontade",
+      "alt": "sal e limão",
+      "livre": true
+     },
+     {
+      "nome": "Ovos",
+      "qtd": "2 unidades, cerca de 165 g",
+      "grupo": "Carne ou ovo",
+      "porcoes": 0.5,
+      "match": [
+       "Ovos de galinha"
+      ],
+      "nota": "O plano original previa carne bovina aqui. Substituído por ovo, equivalente do mesmo grupo, porque Jeff é vegetariano."
+     },
+     {
+      "nome": "Arroz branco",
+      "qtd": "120 g",
+      "grupo": "Arroz",
+      "porcoes": 2,
+      "match": [
+       "Arroz branco cozido"
+      ]
+     },
+     {
+      "nome": "Melão",
+      "qtd": "240 g",
+      "grupo": "Fruta",
+      "porcoes": 1,
+      "match": [
+       "Melão"
+      ]
+     }
+    ]
+   },
+   {
+    "nome": "Ceia",
+    "hora": "23h00",
+    "min": 1380,
+    "kcal": 393,
+    "carb": 43,
+    "itens": [
+     {
+      "nome": "Iogurte triplo zero",
+      "qtd": "340 g",
+      "grupo": "Leite",
+      "porcoes": 2
+     },
+     {
+      "nome": "Mix de frutas",
+      "qtd": "300 g",
+      "alt": "exceto banana, abacate e coco",
+      "grupo": "Fruta",
+      "porcoes": 2
+     },
+     {
+      "nome": "Chia",
+      "qtd": "8 g",
+      "grupo": "Castanha",
+      "porcoes": 1,
+      "match": [
+       "Chia"
+      ],
+      "nota": "O plano chama de Gordura, mas a chia aparece na lista dentro do grupo Castanha, que é de onde vêm as trocas abaixo."
+     },
+     {
+      "nome": "Creatina",
+      "qtd": "5 g",
+      "suplemento": true
+     },
+     {
+      "nome": "Body Protein",
+      "qtd": "1 scoop",
+      "suplemento": true
+     }
+    ]
+   }
+  ],
+  "chas": [
+   {
+    "nome": "Chá de hibisco com gengibre",
+    "preparo": "2 colheres de sopa da erva mais 2 colheres de chá de gengibre em 1 litro de água."
+   },
+   {
+    "nome": "Chá de abacaxi",
+    "preparo": "Casca de abacaxi com parte da polpa em 1 litro de água. Ferver até atingir coloração amarela."
+   },
+   {
+    "nome": "Chá de maçã com canela",
+    "preparo": "Meio litro de água, 4 cascas de maçã vermelha e 2 paus de canela. Infusão de 5 a 10 minutos."
+   }
+  ]
+ },
+ "grupos": {
+  "Pão": {
+   "kcal": 70,
+   "opcoes": [
+    {
+     "nome": "Cuscuz de milho",
+     "qtd": 0.5,
+     "medidaSing": "pedaço pequeno",
+     "medidaPlur": "pedaços pequenos",
+     "g": 23,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Pão bisnaguinha",
+     "qtd": 1.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 20,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Pão de forma",
+     "qtd": 1.0,
+     "medidaSing": "fatia",
+     "medidaPlur": "fatias",
+     "g": 25,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Pão de forma integral",
+     "qtd": 1.0,
+     "medidaSing": "fatia",
+     "medidaPlur": "fatias",
+     "g": 25,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Pão francês",
+     "qtd": 0.5,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 25,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Pipoca com sal",
+     "qtd": 1.0,
+     "medidaSing": "saquinho médio",
+     "medidaPlur": "saquinhos médios",
+     "g": 20,
+     "sub": "Pães e similares"
+    },
+    {
+     "nome": "Biscoito de arroz grande",
+     "qtd": 2.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 20,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Farelo de aveia",
+     "qtd": 3.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 18,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Farelo de trigo",
+     "qtd": 2.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 23,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Farinha de aveia",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 19,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Tapioca",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 23,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Germe de trigo",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 22,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Granola",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 18,
+     "sub": "Cereais e farinhas"
+    },
+    {
+     "nome": "Quinua em flocos",
+     "qtd": 4.0,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 20,
+     "sub": "Cereais e farinhas"
+    }
+   ]
+  },
+  "Carne ou ovo": {
+   "kcal": 200,
+   "nota": "Na lista da nutricionista, o único item sem carne desse grupo é o ovo. Todo o resto (boi, porco, aves, peixes, vísceras) está fora do seu perfil.",
+   "opcoes": [
+    {
+     "nome": "Ovos de galinha",
+     "qtd": 4.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 330,
+     "sub": "Ovo"
+    },
+    {
+     "nome": "Carne bovina grelhada magra",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 100,
+     "sub": "Boi",
+     "veg": false
+    },
+    {
+     "nome": "Lombo assado",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 90,
+     "sub": "Porco",
+     "veg": false
+    },
+    {
+     "nome": "Pernil assado",
+     "qtd": 1.0,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 70,
+     "sub": "Porco",
+     "veg": false
+    },
+    {
+     "nome": "Coxa de frango sem pele",
+     "qtd": 3.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 120,
+     "sub": "Aves",
+     "veg": false
+    },
+    {
+     "nome": "Filé de frango sem pele",
+     "qtd": 2.0,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 130,
+     "sub": "Aves",
+     "veg": false
+    },
+    {
+     "nome": "Peito de frango sem pele",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 140,
+     "sub": "Aves",
+     "veg": false
+    },
+    {
+     "nome": "Atum em água e sal",
+     "qtd": 5.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 160,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Atum em óleo",
+     "qtd": 3.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 112,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Bacalhau refogado",
+     "qtd": 3.5,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 140,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Camarão cozido",
+     "qtd": 6.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 210,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Lagosta cozida",
+     "qtd": 2.5,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 200,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Peixe assado ou cozido",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 155,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Sardinha assada",
+     "qtd": 3.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 120,
+     "sub": "Peixes",
+     "veg": false
+    },
+    {
+     "nome": "Coração de frango",
+     "qtd": 16.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 96,
+     "sub": "Vísceras",
+     "veg": false
+    }
+   ]
+  },
+  "Arroz": {
+   "kcal": 80,
+   "opcoes": [
+    {
+     "nome": "Arroz branco cozido",
+     "qtd": 1.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 60,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Arroz integral cozido",
+     "qtd": 1.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 60,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Banana da terra assada",
+     "qtd": 0.5,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 45,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Batata baroa cozida",
+     "qtd": 2.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 110,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Batata doce cozida",
+     "qtd": 2.5,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 100,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Batata inglesa cozida",
+     "qtd": 2.5,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 150,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Cará cozido",
+     "qtd": 2.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 110,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Farinha de mandioca",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 23,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Farofa",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 23,
+     "sub": "Arroz e raízes",
+     "alerta": "Farofa pronta costuma levar bacon ou calabresa. Confira o rótulo ou faça em casa."
+    },
+    {
+     "nome": "Inhame cozido",
+     "qtd": 2.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 124,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Macarrão cozido",
+     "qtd": 2.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 100,
+     "sub": "Massas"
+    },
+    {
+     "nome": "Macarrão integral cozido",
+     "qtd": 1.5,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 75,
+     "sub": "Massas"
+    },
+    {
+     "nome": "Mandioca cozida",
+     "qtd": 1.5,
+     "medidaSing": "pedaço pequeno",
+     "medidaPlur": "pedaços pequenos",
+     "g": 75,
+     "sub": "Arroz e raízes"
+    },
+    {
+     "nome": "Milho verde cozido",
+     "qtd": 4.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 76,
+     "sub": "Arroz e raízes"
+    }
+   ]
+  },
+  "Feijão": {
+   "kcal": 45,
+   "opcoes": [
+    {
+     "nome": "Ervilha seca ou vagem cozida",
+     "qtd": 1.0,
+     "medidaSing": "colh. servir",
+     "medidaPlur": "colh. servir",
+     "g": 32,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Feijão branco cozido",
+     "qtd": 0.5,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 30,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Feijão cozido",
+     "qtd": 1.0,
+     "medidaSing": "colh. servir cheia",
+     "medidaPlur": "colh. servir cheias",
+     "g": 60,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Grão de bico cozido",
+     "qtd": 1.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 30,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Lentilha cozida",
+     "qtd": 1.5,
+     "medidaSing": "colh. servir",
+     "medidaPlur": "colh. servir",
+     "g": 48,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Salada de feijão fradinho",
+     "qtd": 1.0,
+     "medidaSing": "colh. servir rasa",
+     "medidaPlur": "colh. servir rasas",
+     "g": 30,
+     "sub": "Leguminosas"
+    },
+    {
+     "nome": "Tutu",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 40,
+     "sub": "Leguminosas",
+     "alerta": "Tutu tradicional leva bacon ou linguiça. Vale só na versão sem carne."
+    }
+   ]
+  },
+  "Leite": {
+   "kcal": 70,
+   "opcoes": [
+    {
+     "nome": "Leite desnatado",
+     "qtd": 1.0,
+     "medidaSing": "copo dup. nivelado",
+     "medidaPlur": "copos dup. nivelados",
+     "g": 195,
+     "sub": "Leites"
+    },
+    {
+     "nome": "Leite integral",
+     "qtd": 0.5,
+     "medidaSing": "copo duplo",
+     "medidaPlur": "copos duplos",
+     "g": 98,
+     "sub": "Leites"
+    },
+    {
+     "nome": "Leite semidesnatado",
+     "qtd": 1.0,
+     "medidaSing": "copo peq. nivelado",
+     "medidaPlur": "copos peq. nivelados",
+     "g": 140,
+     "sub": "Leites"
+    },
+    {
+     "nome": "Leite em pó desnatado",
+     "qtd": 2.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 20,
+     "sub": "Leites em pó"
+    },
+    {
+     "nome": "Leite em pó integral",
+     "qtd": 3.0,
+     "medidaSing": "colh. sobr. cheia",
+     "medidaPlur": "colh. sobr. cheias",
+     "g": 15,
+     "sub": "Leites em pó"
+    },
+    {
+     "nome": "Leite em pó semidesnatado",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 16,
+     "sub": "Leites em pó"
+    },
+    {
+     "nome": "Brie",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 30,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Camembert",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 30,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Cottage",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 88,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Gorgonzola",
+     "qtd": 1.5,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 23,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Minas frescal",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 30,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Minas meia cura",
+     "qtd": 1.0,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 20,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Mussarela",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 20,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Parmesão",
+     "qtd": 1.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 15,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Prato",
+     "qtd": 1.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 20,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Provolone",
+     "qtd": 0.5,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 13,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Ricota",
+     "qtd": 1.5,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 53,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Tofu",
+     "qtd": 3.0,
+     "medidaSing": "pedaço grande",
+     "medidaPlur": "pedaços grandes",
+     "g": 105,
+     "sub": "Queijos"
+    },
+    {
+     "nome": "Coalhada integral",
+     "qtd": 0.5,
+     "medidaSing": "potinho",
+     "medidaPlur": "potinhos",
+     "g": 85,
+     "sub": "Outros derivados"
+    },
+    {
+     "nome": "Cream cheese",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 24,
+     "sub": "Outros derivados"
+    },
+    {
+     "nome": "Creme de ricota",
+     "qtd": 2.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 50,
+     "sub": "Outros derivados"
+    },
+    {
+     "nome": "Iogurte natural",
+     "qtd": 9.0,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 170,
+     "sub": "Outros derivados"
+    },
+    {
+     "nome": "Requeijão cremoso",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 30,
+     "sub": "Outros derivados"
+    }
+   ]
+  },
+  "Fruta": {
+   "kcal": 70,
+   "opcoes": [
+    {
+     "nome": "Abacate",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 68,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Abacaxi",
+     "qtd": 2.0,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 160,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Acerola",
+     "qtd": 2.0,
+     "medidaSing": "xícara de chá",
+     "medidaPlur": "xícaras de chá",
+     "g": 196,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Açaí, polpa com glucose",
+     "qtd": 1.0,
+     "medidaSing": "porç. bem pequena",
+     "medidaPlur": "porç. bem pequenas",
+     "g": 60,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Água de coco",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 340,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Ameixa fresca",
+     "qtd": 2.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 140,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Banana",
+     "qtd": 1.0,
+     "medidaSing": "unidade grande",
+     "medidaPlur": "unidades grandes",
+     "g": 72,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Caju",
+     "qtd": 2.0,
+     "medidaSing": "unidade grande",
+     "medidaPlur": "unidades grandes",
+     "g": 180,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Caqui",
+     "qtd": 1.0,
+     "medidaSing": "unidade pequena",
+     "medidaPlur": "unidades pequenas",
+     "g": 100,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Cereja",
+     "qtd": 10.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 70,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Coco cru",
+     "qtd": 1.0,
+     "medidaSing": "pedaço pequeno",
+     "medidaPlur": "pedaços pequenos",
+     "g": 15,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Damasco",
+     "qtd": 4.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 140,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Figo",
+     "qtd": 4.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 160,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Framboesa",
+     "qtd": 1.0,
+     "medidaSing": "xícara de chá",
+     "medidaPlur": "xícaras de chá",
+     "g": 123,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Fruta do conde",
+     "qtd": 1.5,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 90,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Goiaba",
+     "qtd": 0.5,
+     "medidaSing": "unidade grande",
+     "medidaPlur": "unidades grandes",
+     "g": 115,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Jabuticaba",
+     "qtd": 1.0,
+     "medidaSing": "copo peq. cheio",
+     "medidaPlur": "copos peq. cheios",
+     "g": 120,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Jaca",
+     "qtd": 0.5,
+     "medidaSing": "xícara de chá",
+     "medidaPlur": "xícaras de chá",
+     "g": 83,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Kiwi",
+     "qtd": 1.0,
+     "medidaSing": "unidade grande",
+     "medidaPlur": "unidades grandes",
+     "g": 130,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Laranja",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 180,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Maçã",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 135,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Mamão formosa",
+     "qtd": 1.5,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 150,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Manga",
+     "qtd": 1.0,
+     "medidaSing": "unidade pequena",
+     "medidaPlur": "unidades pequenas",
+     "g": 120,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Maracujá",
+     "qtd": 2.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 90,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Melancia",
+     "qtd": 1.0,
+     "medidaSing": "fatia fina",
+     "medidaPlur": "fatias finas",
+     "g": 185,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Melão",
+     "qtd": 1.5,
+     "medidaSing": "fatia média",
+     "medidaPlur": "fatias médias",
+     "g": 240,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Morango",
+     "qtd": 1.5,
+     "medidaSing": "xícara de chá",
+     "medidaPlur": "xícaras de chá",
+     "g": 225,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Nectarina",
+     "qtd": 1.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 136,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Pera",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 155,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Pêssego",
+     "qtd": 4.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 200,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Pitanga",
+     "qtd": 1.0,
+     "medidaSing": "xícara de chá",
+     "medidaPlur": "xícaras de chá",
+     "g": 173,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Salada de frutas",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 76,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Tangerina ou mexerica",
+     "qtd": 1.0,
+     "medidaSing": "unidade grande",
+     "medidaPlur": "unidades grandes",
+     "g": 210,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Uva itália",
+     "qtd": 12.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 144,
+     "sub": "In natura"
+    },
+    {
+     "nome": "Abacaxi seco",
+     "qtd": 1.0,
+     "medidaSing": "porção pequena",
+     "medidaPlur": "porções pequenas",
+     "g": 20,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Ameixa seca",
+     "qtd": 6.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 36,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Banana passa",
+     "qtd": 3.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 42,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Damasco seco",
+     "qtd": 4.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 60,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Figo seco",
+     "qtd": 1.5,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 29,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Maçã desidratada",
+     "qtd": 1.0,
+     "medidaSing": "porção pequena",
+     "medidaPlur": "porções pequenas",
+     "g": 20,
+     "sub": "Desidratadas"
+    },
+    {
+     "nome": "Uva passa",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 22,
+     "sub": "Desidratadas"
+    }
+   ]
+  },
+  "Vegetal refogado": {
+   "kcal": 50,
+   "opcoes": [
+    {
+     "nome": "Abóbora",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 40,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Abobrinha",
+     "qtd": 2.5,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 50,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Brócolis",
+     "qtd": 6.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 60,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Cenoura",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 50,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Chuchu",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 50,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Jiló",
+     "qtd": 1.5,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 45,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Quiabo",
+     "qtd": 3.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 60,
+     "sub": "Vegetais"
+    },
+    {
+     "nome": "Vagem",
+     "qtd": 3.0,
+     "medidaSing": "colh. sopa rasa",
+     "medidaPlur": "colh. sopa rasas",
+     "g": 45,
+     "sub": "Vegetais"
+    }
+   ]
+  },
+  "Castanha": {
+   "kcal": 30,
+   "opcoes": [
+    {
+     "nome": "Amêndoa com sal",
+     "qtd": 5.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Amendoim com sal",
+     "qtd": 6.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Avelã",
+     "qtd": 4.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 4,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Azeitona",
+     "qtd": 5.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 20,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Castanha europeia cozida",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 10,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Castanha de caju com sal",
+     "qtd": 2.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Castanha do pará",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 4,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Chia",
+     "qtd": 0.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 8,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Farinha de linhaça marrom",
+     "qtd": 2.5,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 15,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Gergelim",
+     "qtd": 0.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Linhaça",
+     "qtd": 0.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 8,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Macadâmia",
+     "qtd": 2.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Noz",
+     "qtd": 1.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Pistache",
+     "qtd": 8.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Semente de abóbora com sal",
+     "qtd": 0.5,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 5,
+     "sub": "Castanhas e sementes"
+    },
+    {
+     "nome": "Semente de girassol",
+     "qtd": 1.0,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 6,
+     "sub": "Castanhas e sementes"
+    }
+   ]
+  },
+  "Gordura": {
+   "kcal": 45,
+   "opcoes": [
+    {
+     "nome": "Azeite de oliva",
+     "qtd": 1.0,
+     "medidaSing": "colh. sobremesa",
+     "medidaPlur": "colh. sobremesa",
+     "g": 5,
+     "sub": "Óleos e gorduras"
+    },
+    {
+     "nome": "Banha de porco",
+     "qtd": 0.5,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 4,
+     "sub": "Óleos e gorduras",
+     "veg": false
+    },
+    {
+     "nome": "Creme de leite",
+     "qtd": 1.5,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 21,
+     "sub": "Óleos e gorduras"
+    },
+    {
+     "nome": "Leite de coco",
+     "qtd": 2.0,
+     "medidaSing": "colh. sopa",
+     "medidaPlur": "colh. sopa",
+     "g": 25,
+     "sub": "Óleos e gorduras"
+    },
+    {
+     "nome": "Manteiga com sal",
+     "qtd": 0.5,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 7,
+     "sub": "Óleos e gorduras"
+    },
+    {
+     "nome": "Óleo de canola",
+     "qtd": 1.0,
+     "medidaSing": "colh. sobremesa",
+     "medidaPlur": "colh. sobremesa",
+     "g": 5,
+     "sub": "Óleos e gorduras"
+    },
+    {
+     "nome": "Óleo de girassol",
+     "qtd": 1.0,
+     "medidaSing": "colh. sobremesa",
+     "medidaPlur": "colh. sobremesa",
+     "g": 5,
+     "sub": "Óleos e gorduras"
+    }
+   ]
+  },
+  "Açúcar": {
+   "kcal": 50,
+   "opcoes": [
+    {
+     "nome": "Açúcar mascavo",
+     "qtd": 3.0,
+     "medidaSing": "colh. sobr. rasa",
+     "medidaPlur": "colh. sobr. rasas",
+     "g": 15,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Bananada",
+     "qtd": 1.0,
+     "medidaSing": "unidade pequena",
+     "medidaPlur": "unidades pequenas",
+     "g": 15,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Beijinho",
+     "qtd": 1.0,
+     "medidaSing": "unidade média",
+     "medidaPlur": "unidades médias",
+     "g": 14,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Chocolate Bis",
+     "qtd": 1.0,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 8,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Chocolate meio amargo",
+     "qtd": 2.0,
+     "medidaSing": "quadradinho",
+     "medidaPlur": "quadradinhos",
+     "g": 10,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Geleia de fruta",
+     "qtd": 2.0,
+     "medidaSing": "colh. chá cheia",
+     "medidaPlur": "colh. chá cheias",
+     "g": 20,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Mel",
+     "qtd": 1.0,
+     "medidaSing": "colh. sopa cheia",
+     "medidaPlur": "colh. sopa cheias",
+     "g": 15,
+     "sub": "Açúcares e doces"
+    },
+    {
+     "nome": "Paçoca de amendoim",
+     "qtd": 0.5,
+     "medidaSing": "unidade",
+     "medidaPlur": "unidades",
+     "g": 15,
+     "sub": "Açúcares e doces"
+    }
+   ]
+  }
+ }
+};
+const P = DATA.plano, G = DATA.grupos;
+
+/* ---------- formatação ---------- */
+const nf = n => {
+  const r = Math.round(n * 100) / 100;
+  return (Number.isInteger(r) ? String(r) : r.toFixed(r * 10 % 1 === 0 ? 1 : 2)).replace('.', ',');
+};
+const gr = n => nf(Math.round(n * 10) / 10);
+const medidaDe = (o, porcoes) => {
+  const q = o.qtd * porcoes;
+  return nf(q) + ' ' + (q > 1 ? o.medidaPlur : o.medidaSing);
+};
+
+/* ---------- relógio ---------- */
+const agoraMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+function estadoRefeicoes() {
+  const n = agoraMin();
+  let nowIdx = -1, nextIdx = -1;
+  P.refeicoes.forEach((r, i) => {
+    if (n >= r.min - 30 && n <= r.min + 90) nowIdx = i;
+  });
+  if (nowIdx === -1) {
+    nextIdx = P.refeicoes.findIndex(r => r.min - 30 > n);
+    if (nextIdx === -1) nextIdx = 0;
+  }
+  return { n, nowIdx, nextIdx };
+}
+const hhmm = n => String(Math.floor(n / 60)).padStart(2, '0') + 'h' + String(n % 60).padStart(2, '0');
+
+/* ---------- render ---------- */
+const rail = document.getElementById('rail');
+const nav = document.getElementById('nav');
+const est = estadoRefeicoes();
+
+const iconSwap = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l4 4-4 4"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h12a4 4 0 0 0 4-4"/></svg>';
+
+P.refeicoes.forEach((r, i) => {
+  // marcador de agora entre refeições
+  if (est.nowIdx === -1 && est.nextIdx === i && est.n < r.min) {
+    const m = document.createElement('div');
+    m.className = 'nowmark';
+    m.innerHTML = '<span>agora ' + hhmm(est.n) + '</span>';
+    rail.appendChild(m);
+  }
+
+  const isNow = i === est.nowIdx, isNext = est.nowIdx === -1 && i === est.nextIdx;
+  const sec = document.createElement('section');
+  sec.className = 'meal' + (isNow ? ' now' : '');
+  sec.id = 'r' + i;
+
+  let badge = isNow ? '<span class="badge-now">agora</span>'
+    : isNext ? '<span class="badge-next">próxima</span>' : '';
+
+  let html = '<div class="time">' + r.hora + '</div><div class="dot"></div>'
+    + '<h2>' + r.nome + badge + '</h2>'
+    + '<div class="meta">' + r.kcal + ' kcal &nbsp;·&nbsp; ' + r.carb + ' g de carboidrato</div>'
+    + '<ul class="items">';
+
+  r.itens.forEach((it, j) => {
+    const livre = !!it.livre, sup = !!it.suplemento;
+    html += '<li class="item' + (livre || sup ? ' free' : '') + '">'
+      + '<div class="item-main">'
+      + '<div class="item-name">' + it.nome + '</div>'
+      + '<div class="item-qtd">' + it.qtd + '</div>'
+      + (it.alt ? '<div class="item-alt">' + it.alt + '</div>' : '');
+    if (it.grupo) {
+      const warn = it.carne ? ' warn' : '';
+      html += '<span class="grp' + warn + '">' + it.grupo + ' · ' + nf(it.porcoes) + (it.porcoes === 1 ? ' porção' : ' porções') + '</span>';
+    }
+    if (it.carne) html += '<div class="item-note">Fora do seu perfil. Equivale a ' + it.trocaPadrao + '</div>';
+    if (it.nota) html += '<div class="item-note">' + it.nota + '</div>';
+    html += '</div>';
+    if (it.grupo) {
+      html += '<button class="swap" data-r="' + i + '" data-i="' + j + '" aria-label="Ver substituições de ' + it.nome + '">' + iconSwap + '</button>';
+    }
+    html += '</li>';
+  });
+
+  html += '</ul>';
+  sec.innerHTML = html;
+  rail.appendChild(sec);
+
+  const c = document.createElement('button');
+  c.className = 'chip';
+  c.innerHTML = r.nome + '<span class="h">' + r.hora + '</span>';
+  if (isNow || isNext) c.setAttribute('aria-current', 'true');
+  c.onclick = () => document.getElementById('r' + i).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  nav.appendChild(c);
+});
+
+document.getElementById('teas').innerHTML = P.chas
+  .map(t => '<div class="tea"><b>' + t.nome + '</b><p>' + t.preparo + '</p></div>').join('');
+
+/* ---------- folha ---------- */
+const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
+const body = document.getElementById('sheetBody'), q = document.getElementById('q');
+const vegBtn = document.getElementById('vegBtn');
+let atual = null, soVeg = true, lastFocus = null;
+
+function abrir(ri, ii) {
+  const r = P.refeicoes[ri], it = r.itens[ii];
+  atual = { it, grupo: G[it.grupo], nomeGrupo: it.grupo, ref: r };
+  document.getElementById('sheetFrom').textContent = r.nome + ' · ' + r.hora;
+  document.getElementById('sheetTitle').textContent = 'Trocar ' + it.nome.toLowerCase();
+  const kcal = atual.grupo.kcal * it.porcoes;
+  document.getElementById('sheetEq').textContent =
+    nf(it.porcoes) + (it.porcoes === 1 ? ' porção' : ' porções') + ' do grupo ' + it.grupo + ' · cerca de ' + gr(kcal) + ' kcal';
+  q.value = '';
+  soVeg = true; vegBtn.setAttribute('aria-pressed', 'true');
+  lista();
+  lastFocus = document.activeElement;
+  scrim.classList.add('on'); sheet.classList.add('on');
+  document.body.style.overflow = 'hidden';
+  body.scrollTop = 0;
+  setTimeout(() => document.getElementById('close').focus(), 120);
+}
+
+function fechar() {
+  scrim.classList.remove('on'); sheet.classList.remove('on');
+  document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+
+function lista() {
+  const { it, grupo } = atual;
+  const termo = q.value.trim().toLowerCase();
+  let ops = grupo.opcoes.filter(o => (soVeg ? o.veg !== false : true));
+  if (termo) ops = ops.filter(o => o.nome.toLowerCase().includes(termo));
+
+  if (!ops.length) { body.innerHTML = '<p class="empty">Nada com esse nome dentro do grupo ' + atual.nomeGrupo + '.</p>'; return; }
+
+  const subs = [];
+  ops.forEach(o => { if (!subs.includes(o.sub)) subs.push(o.sub); });
+
+  let html = '';
+  subs.forEach(s => {
+    html += '<div class="subhead">' + s + '</div>';
+    ops.filter(o => o.sub === s).forEach(o => {
+      const eAtual = Array.isArray(it.match) && it.match.includes(o.nome);
+      html += '<div class="opt' + (eAtual ? ' atual' : '') + '">'
+        + '<div class="opt-main">'
+        + '<div class="opt-name">' + o.nome + (eAtual ? '<span class="tag-atual">no plano</span>' : '') + '</div>'
+        + '<div class="opt-med">' + medidaDe(o, it.porcoes) + '</div>'
+        + (o.alerta ? '<div class="opt-warn">' + o.alerta + '</div>' : '')
+        + '</div>'
+        + '<div class="opt-g">' + gr(o.g * it.porcoes) + ' g</div>'
+        + '</div>';
+    });
+  });
+
+  if (atual.grupo.nota && soVeg) html += '<div class="sheet-note">' + atual.grupo.nota + '</div>';
+  else html += '<div class="sheet-note">Todos os pesos acima já estão multiplicados pelas ' + nf(it.porcoes) + ' porções desse item. Troque um alimento por outro do mesmo grupo, nunca entre grupos diferentes.</div>';
+
+  body.innerHTML = html;
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('.swap');
+  if (b) abrir(+b.dataset.r, +b.dataset.i);
+});
+document.getElementById('close').onclick = fechar;
+scrim.onclick = fechar;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('on')) fechar(); });
+q.addEventListener('input', lista);
+vegBtn.onclick = () => { soVeg = !soVeg; vegBtn.setAttribute('aria-pressed', String(soVeg)); vegBtn.textContent = soVeg ? 'Sem carne' : 'Lista toda'; lista(); };
+
+/* posiciona na refeição do momento ao abrir */
+window.addEventListener('load', () => {
+  const alvo = est.nowIdx !== -1 ? est.nowIdx : est.nextIdx;
+  const el = document.getElementById('r' + alvo);
+  if (el && alvo > 0) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 420);
+});
+</script>
+</body>
+</html>
