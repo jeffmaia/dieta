@@ -121,14 +121,14 @@ body{font-feature-settings:"tnum" 1}
    já no mesmo movimento. Os ícones encolhem menos (85%, 80% ou 70% do tamanho, à escolha no menu):
    como o prato inteiro vai a 50%, cada ícone recebe uma contra-escala de --ice. */
 :root{--P:172px}
-body{--ice:1.7}
-body[data-icone="80"]{--ice:1.6}
-body[data-icone="70"]{--ice:1.4}
+/* ícones terminam em 80% do tamanho original */
+body{--ice:1.6}
 .cena{transform-origin:50% 0}
 .esc{position:absolute;inset:0}
 @keyframes encolhe{to{transform:scale(.5)}}
 @keyframes sobe{to{transform:translateY(calc(var(--P) * -1))}}
-@keyframes contra{to{transform:scale(var(--ice))}}
+/* e vão saindo para a borda do prato: no fim ficam metade dentro, metade fora (raio de .335D para .5D) */
+@keyframes contra{to{transform:translate(calc(var(--cx) * var(--D) * .165),calc(var(--sy) * var(--D) * .165)) scale(var(--ice))}}
 @keyframes apaga{to{opacity:0}}
 @supports (animation-timeline: scroll()){
   #palco .cena,.slide .cena{animation:encolhe linear both;animation-timeline:scroll(root block);animation-range:0 var(--P)}
@@ -153,7 +153,7 @@ body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{displa
 <script src="dados.js"></script>
 <script src="icones/a.js"></script><script src="icones/b.js"></script><script src="icones/c.js"></script>
 <script>
-window.OPCOES_EXTRA = [{ k: 'icone', t: 'Ícones ao rolar (tamanho final)', v: [['85','85%'],['80','80%'],['70','70%']] }, { k: 'lista', t: 'Lista do prato', v: [['pilulas','Pílulas'],['linhas','Linhas'],['cartoes','Cartões'],['mosaico','Mosaico']] }];
+window.OPCOES_EXTRA = [{ k: 'lista', t: 'Lista do prato', v: [['pilulas','Pílulas'],['linhas','Linhas'],['cartoes','Cartões'],['mosaico','Mosaico']] }];
 </script>
 <script src="motor.js"></script>
 <script>
@@ -179,7 +179,8 @@ let camadas = [], prato = null, nMeals = 0;
 
 function slots(D, ls, n, vis){
   return ls.map((x,j) => {
-    const a = j/n*360 - 90, st = `style="--a:${a.toFixed(1)}deg" data-ang="${a.toFixed(1)}"`;
+    const a = j/n*360 - 90, rad = a * Math.PI / 180;
+    const st = `style="--a:${a.toFixed(1)}deg;--cx:${Math.cos(rad).toFixed(4)};--sy:${Math.sin(rad).toFixed(4)}" data-ang="${a.toFixed(1)}"`;
     const cls = `slot ${x.it.fixo?'fixo':''} ${x.l.orig?'':'alt'}`;
     const b = vis ? `<span class="esc"><span class="bolha">${ic(x.l.emoji) + (x.it.trocavel ? `<span class="trk">${D.ico.swap}</span>` : '')}</span></span>` : `<span class="bolha"></span>`;
     return (!vis && x.it.trocavel)
@@ -308,7 +309,11 @@ if (!(window.CSS && CSS.supports('animation-timeline: scroll()'))) {
     const y = Math.max(0, scrollY), k = cl(y / P);
     document.querySelectorAll('#palco .cena,.slide .cena').forEach(c => { c.style.transform = `scale(${1 - .5 * k})`; });
     document.querySelectorAll('.slide .info').forEach(c => { c.style.transform = `translateY(${-k * P}px)`; });
-    document.querySelectorAll('#palco .esc').forEach(c => { c.style.transform = `scale(${1 + (ice - 1) * k})`; });
+    const dR = ((document.querySelector('#palco .cena') || {}).offsetWidth || 0) * .165;
+    document.querySelectorAll('#palco .esc').forEach(c => {
+      const st = getComputedStyle(c), cx = parseFloat(st.getPropertyValue('--cx')) || 0, sy = parseFloat(st.getPropertyValue('--sy')) || 0;
+      c.style.transform = `translate(${cx * dR * k}px,${sy * dR * k}px) scale(${1 + (ice - 1) * k})`;
+    });
     const cs = document.querySelector('#palco .centros'); if (cs) cs.style.opacity = 1 - cl(y / (P * .6));
   };
   addEventListener('scroll', () => { if (!r2) r2 = requestAnimationFrame(encolher); }, { passive: true });

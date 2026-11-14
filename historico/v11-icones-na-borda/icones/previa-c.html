@@ -1,0 +1,9 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Prévia c: frutas</title>
+<style>body{margin:0;font:12px system-ui;color:#222}section{padding:16px}.g{display:flex;flex-wrap:wrap;gap:10px}.i{width:112px;text-align:center}.i svg{display:block;margin:0 auto 4px}.s .i{width:auto}
+.l{background:#fff}.d{background:#1c1c24;color:#eee}.c{background:#2f9e8f;color:#fff}.o{background:#f4a259;color:#222}h3{margin:0 0 8px}</style>
+<div id="app"></div><script src="c.js"></script><script>
+const names=Object.keys(window.ICONES);const app=document.getElementById('app');
+const svg=(n,s)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 64 64">'+window.ICONES[n]+'</svg>';
+[['l','claro'],['d','escuro'],['c','colorido'],['o','laranja']].forEach(([k,t])=>{
+ app.insertAdjacentHTML('beforeend','<section class="'+k+'"><h3>'+t+' 96 px ('+names.length+')</h3><div class="g">'+names.map(n=>'<div class="i">'+svg(n,96)+n+'</div>').join('')+'</div><h3 style="margin-top:14px">'+t+' 28 px</h3><div class="g s">'+names.map(n=>'<div class="i" title="'+n+'">'+svg(n,28)+'</div>').join('')+'</div></section>');});
+</script></html>
