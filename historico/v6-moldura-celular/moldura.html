@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dieta · melhor no celular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF6EA;--fg:#3A2618;--muted:#8A7461;--line:#EBDAC5;--accent:#E8452C;--sol:#FFD166;--rosa:#FFB4A2;--menta:#B8E0D2}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(40% 50% at 12% 20%,rgba(255,209,102,.45),transparent 70%),radial-gradient(40% 50% at 90% 85%,rgba(184,224,210,.55),transparent 70%)}
+main{height:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:56px;padding:24px 48px;max-width:1440px;margin:0 auto}
+
+/* lado esquerdo: o recado e o QR */
+.recado{justify-self:end;max-width:340px}
+.recado small{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.recado h1{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:clamp(30px,3vw,42px);line-height:1.04;letter-spacing:-.01em;margin:10px 0 0;text-wrap:balance}
+.recado p{font-size:15.5px;line-height:1.5;color:var(--muted);margin:14px 0 0}
+.qr{display:flex;align-items:center;gap:16px;margin-top:26px;padding:14px;border-radius:26px;background:#fff;box-shadow:0 14px 34px rgba(58,38,24,.12);width:max-content;max-width:100%}
+.qr-img{width:132px;height:132px;flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:#fff}
+.qr-img svg{width:100%;height:100%;display:block}
+.qr-txt{font-size:13px;line-height:1.4;color:var(--muted);max-width:150px}
+.qr-txt b{display:block;color:var(--fg);font-size:14px;margin-bottom:4px}
+.qr-txt code{font-size:11.5px;word-break:break-all;color:var(--fg)}
+.aviso{margin-top:10px;font-size:12.5px;color:var(--accent)}
+
+/* centro: o celular */
+.palco{--w:414px;--h:868px;--k:1;position:relative;flex:0 0 auto;width:calc(var(--w) * var(--k));height:calc(var(--h) * var(--k))}
+.fone{position:absolute;left:0;top:0;width:var(--w);height:var(--h);transform:scale(var(--k));transform-origin:0 0;
+  border-radius:66px;background:#1D1410;padding:12px;box-shadow:0 0 0 2px #4A3A30 inset,0 40px 80px rgba(58,38,24,.28),0 10px 24px rgba(58,38,24,.18)}
+.fone::before{content:"";position:absolute;right:-3px;top:190px;width:4px;height:96px;border-radius:2px;background:#2B201A}
+.fone::after{content:"";position:absolute;left:-3px;top:160px;width:4px;height:58px;border-radius:2px;background:#2B201A;box-shadow:0 78px 0 #2B201A}
+.tela{position:relative;width:100%;height:100%;border-radius:54px;overflow:hidden;background:var(--bg)}
+.tela iframe{width:100%;height:100%;border:0;display:block}
+.ilha{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:2;pointer-events:none}
+
+/* lado direito: a linha do tempo */
+.trilha{justify-self:start;max-width:300px}
+.trilha small{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cartao{display:block;margin-top:12px;padding:22px;border-radius:28px;background:var(--fg);color:var(--bg);text-decoration:none;
+  box-shadow:0 14px 34px rgba(58,38,24,.18);transition:transform .25s cubic-bezier(.32,.72,0,1)}
+.cartao:hover{transform:translateY(-3px) rotate(-1deg)}
+.cartao h2{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:26px;line-height:1.05;margin:0}
+.cartao p{font-size:14px;line-height:1.45;margin:10px 0 0;color:#E8D5C0}
+.cartao span{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-weight:600;font-size:14px;color:var(--sol)}
+.solto{display:inline-block;margin-top:16px;font-size:13px;color:var(--muted)}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* telas estreitas (tablet em pé): recado em cima, celular no meio, linha do tempo embaixo */
+@media (max-width:1000px){
+  body{overflow:auto}
+  main{height:auto;grid-template-columns:1fr;justify-items:center;gap:32px;padding:40px 24px 56px}
+  .recado,.trilha{justify-self:center;max-width:520px;text-align:center}
+  .qr{margin-left:auto;margin-right:auto}
+}
+@media (prefers-reduced-motion:reduce){.cartao{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <section class="recado">
+    <small>Psiu</small>
+    <h1>Isso aqui foi feito para caber na palma da mão.</h1>
+    <p>No computador até funciona, mas o prato gira melhor no dedo. Aponte a câmera do celular para o código e continue de lá.</p>
+    <div class="qr">
+      <div class="qr-img" id="qr" role="img" aria-label="Código QR para abrir no celular"></div>
+      <div class="qr-txt"><b>Abrir no celular</b><code id="qrUrl"></code></div>
+    </div>
+    <div class="aviso" id="aviso" hidden>Você está em localhost: o celular não abre esse endereço. Abra esta página pelo IP do Mac na rede para o código funcionar.</div>
+  </section>
+
+  <div class="palco" id="palco">
+    <div class="fone"><div class="tela"><div class="ilha"></div><iframe id="app" title="App da dieta"></iframe></div></div>
+  </div>
+
+  <aside class="trilha">
+    <small>Bastidores</small>
+    <a class="cartao" href="/linha-do-tempo/index.html">
+      <h2>Como chegamos até aqui</h2>
+      <p>A linha do tempo do redesign, versão por versão.</p>
+      <span>Abrir a linha do tempo →</span>
+    </a>
+    <a class="solto" id="solto" href="#">Prefere ver sem a moldura? Abrir solto</a>
+  </aside>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  const q = new URLSearchParams(location.search);
+  let u = q.get('u') || 'index.html';
+  if (!u.startsWith('/') && !/^[\w-]+\.html/.test(u)) u = 'index.html';
+  const abs = new URL(u, location.href);
+  const comParam = (url, p) => { const x = new URL(url); x.searchParams.set(p, '1'); return x.pathname + x.search + x.hash; };
+
+  document.getElementById('app').src = comParam(abs.href, 'celular');
+  document.getElementById('solto').href = comParam(abs.href, 'solto');
+
+  const link = abs.origin + abs.pathname + abs.search + abs.hash;
+  document.getElementById('qrUrl').textContent = link.replace(/^https?:\/\//, '');
+  if (/^(localhost|127\.|\[::1\])/.test(location.hostname)) document.getElementById('aviso').hidden = false;
+  try {
+    const qr = qrcode(0, 'M'); qr.addData(link); qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  } catch (e) { document.querySelector('.qr-img').style.display = 'none'; }
+
+  /* o celular sempre cabe na altura da janela */
+  const ajustar = () => {
+    const estreita = innerWidth <= 1000;
+    const k = Math.min(1, (innerHeight - (estreita ? 80 : 48)) / 868, estreita ? (innerWidth - 32) / 414 : 1);
+    document.getElementById('palco').style.setProperty('--k', Math.max(.45, k).toFixed(3));
+  };
+  addEventListener('resize', ajustar); ajustar();
+})();
+</script>
+</body>
+</html>
