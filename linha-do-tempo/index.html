@@ -140,6 +140,19 @@ footer .wrap{border-top:1px solid var(--line);padding-top:22px}
 .lb .fechar{position:absolute;top:18px;right:18px;width:44px;height:44px;border-radius:50%;background:rgba(255,246,234,.14);color:#fff;font-size:22px}
 .lb .acoes{display:flex;gap:8px}
 .lb .btn{background:var(--bg);color:var(--fg)}
+.lb .seta:disabled{visibility:hidden}
+.lb img#lbImg{height:min(76vh,1298px)}
+.lb .viz{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:.6;transition:opacity .2s,transform .2s;flex:0 0 auto}
+.lb .viz:hover{opacity:1;transform:translateY(-3px)}
+.lb .viz[hidden]{display:flex;visibility:hidden}
+.lb .viz img{height:min(52vh,900px);width:auto;border-radius:20px}
+.lb .viz span{color:#fff;font-size:13px;font-weight:600}
+.cta{display:flex;align-items:center;gap:12px;margin-top:26px}
+.cta small{font-size:13px;color:var(--muted)}
+.btn.grande{display:inline-flex;gap:8px;align-items:center;padding:13px 22px;font-size:15px;text-decoration:none}
+section.necess{padding:20px 0 56px}
+#lado .sec-head{margin-bottom:22px}
+@media (max-width:1100px){.lb .viz{display:none!important}}
 
 @media (max-width:980px){
   .capa .wrap{grid-template-columns:1fr}
@@ -169,6 +182,7 @@ footer .wrap{border-top:1px solid var(--line);padding-top:22px}
         <div style="--c:var(--c2)"><b>30</b><span>telas</span></div>
         <div style="--c:var(--c4)"><b>151</b><span>ícones</span></div>
       </div>
+      <div class="cta"><a class="btn grande" href="../conceitos/4-prato.html">Abrir o app <span aria-hidden="true">→</span></a><small>versão atual, a v11</small></div>
     </div>
     <div class="prato-hero" aria-hidden="true">
       <div class="mancha"></div><div class="pr"></div><div class="anel" id="anel"></div>
@@ -177,31 +191,32 @@ footer .wrap{border-top:1px solid var(--line);padding-top:22px}
   </div>
 </header>
 
+<section class="sec necess" id="perguntas">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Necessidades</div>
+      <h2>O que eu precisava resolver</h2>
+      <p>Cinco necessidades do meu dia a dia com a dieta. Cada versão abaixo responde a uma ou mais delas.</p>
+    </div>
+    <div class="perguntas" id="perguntasGrid"></div>
+  </div>
+</section>
+
 <div class="trilho-wrap">
   <nav class="trilho" id="trilho" role="tablist" aria-label="Versões"></nav>
 </div>
 
 <main>
-  <div class="wrap"><article class="fase" id="fase"></article></div>
+  <div class="wrap" id="faseWrap"><article class="fase" id="fase"></article></div>
 
-  <section class="sec" id="lado">
+  <section class="fase" id="lado" hidden>
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Lado a lado</div>
+        <div class="eyebrow">Tela a tela</div>
         <h2>A mesma tela em cada versão</h2>
-        <p>Toque numa tela para ampliar. De lá dá para abrir a versão interativa.</p>
+        <p>Toque numa tela para ampliar: a versão anterior e a seguinte aparecem dos lados. De lá dá para abrir a versão interativa.</p>
       </div>
       <div class="comp" id="comp"></div>
-    </div>
-  </section>
-
-  <section class="sec" id="perguntas">
-    <div class="wrap">
-      <div class="sec-head">
-        <div class="eyebrow">Perguntas que viraram funções</div>
-        <h2>Cada função nasceu de uma dúvida minha</h2>
-      </div>
-      <div class="perguntas" id="perguntasGrid"></div>
     </div>
   </section>
 
@@ -223,7 +238,9 @@ footer .wrap{border-top:1px solid var(--line);padding-top:22px}
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Tela ampliada">
   <button class="fechar" id="lbX" aria-label="Fechar">×</button>
   <button class="seta" id="lbA" aria-label="Anterior">‹</button>
+  <button class="viz" id="lbVA" aria-label="Versão anterior"><img alt=""><span></span></button>
   <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption><div class="acoes"><button class="btn" id="lbAbrir">Abrir interativo</button></div></figure>
+  <button class="viz" id="lbVP" aria-label="Versão seguinte"><img alt=""><span></span></button>
   <button class="seta" id="lbP" aria-label="Próxima">›</button>
 </div>
 
@@ -337,15 +354,28 @@ function abrirTela(id){
 /* ---------- fases ---------- */
 function renderTrilho(){
   $('#trilho').innerHTML = FASES.map(f=>`<button class="no" role="tab" data-id="${f.id}" aria-selected="false" style="--c:${CORES[f.cor]}"><i>${f.n}</i><span>${esc(f.nome)}</span></button>`).join('')
-    + `<button class="no lado" data-ir="lado"><i>⇆</i><span>Lado a lado</span></button>`;
+    + `<button class="no lado" role="tab" data-id="lado" aria-selected="false"><i>⇆</i><span>Tela a tela</span></button>`;
   $('#trilho').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>irFase(b.dataset.id,true));
-  $('#trilho').querySelector('[data-ir]').onclick=()=>$('#lado').scrollIntoView({behavior:'smooth'});
 }
 const idx = id => FASES.findIndex(f=>f.id===id);
 
+/* marca o item no menu e centraliza só o menu, sem mexer na rolagem da página */
+function marcar(id){
+  const tr = $('#trilho');
+  tr.querySelectorAll('[data-id]').forEach(b=>{ const on=b.dataset.id===id; b.setAttribute('aria-selected',String(on));
+    if(on) tr.scrollTo({left: b.offsetLeft - (tr.clientWidth - b.offsetWidth)/2, behavior:'smooth'}); });
+}
+
 function irFase(id, rolar, tela){
+  if(id==='lado'){
+    marcar('lado'); $('#faseWrap').hidden = true; $('#lado').hidden = false; ifr = null;
+    history.replaceState(null,'','#lado');
+    if(rolar) setTimeout(()=>$('#lado').scrollIntoView({behavior:'smooth',block:'start'}),0);
+    return;
+  }
   const f = FASES[idx(id)]; if(!f) return;
-  $('#trilho').querySelectorAll('[data-id]').forEach(b=>{ const on=b.dataset.id===id; b.setAttribute('aria-selected',String(on)); if(on) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); });
+  $('#faseWrap').hidden = false; $('#lado').hidden = true;
+  marcar(id);
   const art = $('#fase'); art.style.setProperty('--c', CORES[f.cor]);
   const ant = FASES[idx(id)-1], prox = FASES[idx(id)+1];
   art.innerHTML = `
@@ -369,32 +399,42 @@ function irFase(id, rolar, tela){
   art.querySelectorAll('.tela-b').forEach(b=>b.onclick=()=> TELAS[b.dataset.t].t[3] ? abrirTela(b.dataset.t) : ampliar(0,[b.dataset.t]));
   art.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>irFase(b.dataset.go,true));
   abrirTela(tela || f.telas[0][0]);
-  history.replaceState(null,'','#'+id);
+  if(rolar || location.hash) history.replaceState(null,'','#'+id);
   if(rolar) setTimeout(()=>art.scrollIntoView({behavior:'smooth',block:'start'}),0);
 }
 
 /* ---------- lado a lado + ampliar ---------- */
-let ordemComp = [], ordem = [], atual = 0;
+let ordem = [], atual = 0;
 function renderComp(){
-  ordem = ordemComp;
   const cab = `<tr><th class="lin"></th>${FASES.map(f=>`<th>${esc(f.n)}<small>${esc(f.nome)}</small></th>`).join('')}</tr>`;
-  const linhas = COMP.map(([nome, ids]) => `<tr><th class="lin">${esc(nome)}</th>${ids.map(id=>{
+  const linhas = COMP.map(([nome, ids], r) => { let p = 0; return `<tr><th class="lin">${esc(nome)}</th>${ids.map(id=>{
     if(!id) return `<td><div class="vazio">não existia</div></td>`;
-    const i = ordem.push(id)-1;
-    return `<td><button data-i="${i}" aria-label="Ampliar ${esc(nome)} ${esc(TELAS[id].f.n)}"><div class="th"><img src="telas/${id}.jpg" alt="" loading="lazy"></div></button></td>`;
-  }).join('')}</tr>`).join('');
+    return `<td><button data-r="${r}" data-p="${p++}" aria-label="Ampliar ${esc(nome)} ${esc(TELAS[id].f.n)}"><div class="th"><img src="telas/${id}.jpg" alt="" loading="lazy"></div></button></td>`;
+  }).join('')}</tr>`; }).join('');
   $('#comp').innerHTML = `<table>${cab}${linhas}</table>`;
-  $('#comp').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>ampliar(+b.dataset.i));
+  /* cada linha é uma sequência: a tela ampliada mostra a versão anterior e a seguinte da mesma linha */
+  $('#comp').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>ampliar(+b.dataset.p, COMP[+b.dataset.r][1].filter(Boolean)));
+}
+function vizinha(el, id){
+  el.hidden = !id; if(!id) return;
+  const x = TELAS[id];
+  el.querySelector('img').src = `telas/${id}.jpg`;
+  el.querySelector('span').textContent = `${x.f.n} · ${x.t[1]}`;
 }
 function ampliar(i, lista){
-  if(lista) ordem = lista; else if(!$('#lb').classList.contains('on')) ordem = ordemComp;
-  atual = (i + ordem.length) % ordem.length;
+  if(lista) ordem = lista;
+  if(i < 0 || i >= ordem.length) return;
+  atual = i;
   const x = TELAS[ordem[atual]];
   $('#lbImg').src = `telas/${ordem[atual]}.jpg`;
   $('#lbImg').alt = x.t[1];
   $('#lbCap').innerHTML = `<b>${esc(x.f.n)} · ${esc(x.t[1])}</b>${esc(x.t[2])}`;
+  vizinha($('#lbVA'), ordem[atual-1]); vizinha($('#lbVP'), ordem[atual+1]);
+  $('#lbA').disabled = atual===0; $('#lbP').disabled = atual===ordem.length-1;
   $('#lb').classList.add('on'); document.body.classList.add('travado');
 }
+$('#lbVA').onclick = () => ampliar(atual-1);
+$('#lbVP').onclick = () => ampliar(atual+1);
 const fechar = () => { $('#lb').classList.remove('on'); document.body.classList.remove('travado'); };
 $('#lbX').onclick = fechar;
 $('#lb').onclick = e => { if(e.target.id==='lb') fechar(); };
@@ -423,7 +463,7 @@ async function renderIcones(){
 
 renderTrilho(); renderComp(); renderPerguntas(); renderIcones();
 const h = location.hash.slice(1);
-irFase(FASES.some(f=>f.id===h) ? h : 'v0', false);
+irFase(FASES.some(f=>f.id===h) || h==='lado' ? h : 'v0', false);
 </script>
 </body>
 </html>
