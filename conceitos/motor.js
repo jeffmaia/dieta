@@ -163,6 +163,8 @@ function irPara(v) {
   document.querySelectorAll('.tabbar [data-view]').forEach(b => b.setAttribute('aria-current', String(b.dataset.view === v)));
   document.body.classList.remove('menu-fora');
   window.scrollTo(0, 0);
+  /* o estado vazio anima só com a página aberta: recomeça a cada visita */
+  if (v === 'alteracoes' && window.VAZIO) renderAlt();
 }
 let tT;
 function toast(msg) {
@@ -249,7 +251,7 @@ function renderAlt() {
   let h = '<header class="pg-head"><h1>Alterações</h1><p>' + (ms.length
     ? nAlt() + (nAlt() === 1 ? ' item diferente' : ' itens diferentes') + ' da dieta original.'
     : 'Sua dieta está igual à original.') + '</p></header>';
-  if (!ms.length) h += '<p class="pg-vazio">Quando você salvar uma troca, ela aparece aqui, e dá para desfazer por item, por refeição ou tudo de uma vez.</p>';
+  if (!ms.length) h += window.VAZIO ? VAZIO.html() : '<p class="pg-vazio">Quando você salvar uma troca, ela aparece aqui, e dá para desfazer por item, por refeição ou tudo de uma vez.</p>';
   ms.forEach(m => {
     h += '<section class="alt-meal"><div class="alt-mh"><h2>' + esc(m.nome) + '</h2><button class="b-link" data-reset-meal="' + m.i + '">Restaurar refeição</button></div>';
     m.itens.filter(x => x.alterado).forEach(x => {
@@ -263,6 +265,7 @@ function renderAlt() {
   });
   if (ms.length) h += '<button class="b-ghost wide" data-reset-all>Restaurar a dieta original inteira</button>';
   $('alteracoes').innerHTML = h;
+  if (!ms.length && window.VAZIO) VAZIO.iniciar($('alteracoes'));
 }
 
 /* ---------- lista de mercado ---------- */

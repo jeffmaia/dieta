@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="moldura.js"></script>
+<title>Conceito 1 · Palco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+:root{
+  --bg:#15131F;--fg:#F5F2FF;--muted:#A49FB8;--line:#34304A;--surface:#1D1A2B;
+  --accent:#FFD23F;--accent-fg:#1F1A00;--radius:999px;--sheet-r:32px;
+  --bar:rgba(21,19,31,.86);--bar-fg:#F5F2FF;--bar-on:#F5F2FF;--bar-on-fg:#15131F;
+  --font:"Bricolage Grotesque",system-ui,sans-serif;--display:"Bricolage Grotesque",system-ui,sans-serif;--display-w:800;
+}
+#dieta{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#dieta::-webkit-scrollbar{display:none}
+.painel{flex:0 0 100vw;height:100dvh;overflow-y:auto;scroll-snap-align:start;scroll-snap-stop:always;
+  background:var(--pb);color:var(--pf);padding:calc(56px + env(safe-area-inset-top)) 24px calc(120px + env(safe-area-inset-bottom))}
+.p-top{display:flex;justify-content:space-between;font-size:14px;font-weight:700;letter-spacing:.04em;opacity:.7}
+.painel h2{font-size:clamp(52px,16vw,84px);line-height:.9;letter-spacing:-.045em;font-weight:800;margin:14px 0 26px;text-wrap:balance}
+.painel ul{list-style:none;margin:0;padding:0}
+.painel li{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:2px solid color-mix(in srgb,var(--pf) 16%,transparent);min-height:62px}
+.painel li .e{font-size:32px;width:40px;text-align:center;flex:0 0 auto}
+.painel li .n{flex:1;min-width:0;font-size:18px;font-weight:700;line-height:1.15}
+.painel li .n small{display:block;font-size:13px;font-weight:500;opacity:.7;margin-top:2px}
+.painel li b{font-size:15px;font-weight:700;text-align:right;max-width:38%;line-height:1.2}
+.painel li svg{width:18px;height:18px;flex:0 0 auto;opacity:.55}
+.painel li.fixo{opacity:.62}
+.painel li.alt .n::after{content:"trocado";display:inline-block;margin-left:8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--pf);color:var(--pb);border-radius:999px;padding:3px 8px;vertical-align:2px}
+.painel li[data-swap]{cursor:pointer}
+.p-foot{margin-top:22px;font-size:14px;font-weight:700;opacity:.75;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.p-foot button{text-decoration:underline;min-height:44px}
+.resumo{display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;margin-top:10px}
+.resumo div b{display:block;font-size:54px;line-height:.95;letter-spacing:-.04em;font-weight:800}
+.resumo div span{font-size:14px;font-weight:700;opacity:.7}
+.dots{position:fixed;top:calc(22px + env(safe-area-inset-top));left:24px;right:24px;display:flex;gap:5px;z-index:5;pointer-events:none}
+.dots i{flex:1;height:4px;border-radius:2px;background:currentColor;opacity:.22;transition:opacity .2s}
+.dots i.on{opacity:.9}
+body:not([data-view="dieta"]) .dots{display:none}
+</style>
+</head>
+<body>
+<div class="dots" id="dots"></div>
+<main id="dieta"></main>
+<script src="dados.js"></script>
+<script src="icones/a.js"></script><script src="icones/b.js"></script><script src="icones/c.js"></script>
+<script src="motor.js"></script>
+<script>
+const CORES = [['#FFD23F','#1F1A00'],['#FF7A59','#2A0A00'],['#9BE3B0','#06281A'],['#8EC5FF','#04203D'],['#4A35B0','#F3EEFF'],['#15131F','#F5F2FF'],['#F5F2FF','#15131F']];
+const el = document.getElementById('dieta'), dots = document.getElementById('dots');
+function renderDieta(D){
+  const x = el.scrollLeft, ms = D.meals();
+  el.innerHTML = ms.map((m,k) => `
+    <section class="painel" style="--pb:${CORES[k][0]};--pf:${CORES[k][1]}" aria-label="${m.nome}">
+      <div class="p-top"><span>${k+1} de ${ms.length}</span><span>${m.hora}</span></div>
+      <h2>${m.nome}</h2>
+      <ul>${m.itens.map(it => it.linhas.map(l => `
+        <li class="${it.fixo?'fixo':''} ${l.orig?'':'alt'}" ${it.trocavel?`data-swap="${it.id}" role="button" tabindex="0" aria-label="Trocar ${D.esc(l.nome)}"`:''}>
+          <span class="e">${l.emoji}</span>
+          <span class="n">${D.esc(l.nome)}${l.medida?`<small>${l.medida}</small>`:l.alt?`<small>${D.esc(l.alt)}</small>`:''}</span>
+          <b>${l.txt}</b>${it.trocavel?D.ico.swap:''}
+        </li>`).join('')).join('')}
+      </ul>
+      <div class="p-foot"><span>${m.kcal} kcal</span><span>${m.carb} g carb</span><span>≈${m.prot} g prot</span>
+        ${m.alterada?`<button data-reset-meal="${m.i}">Restaurar refeição</button>`:''}</div>
+    </section>`).join('') + `
+    <section class="painel" style="--pb:${CORES[6][0]};--pf:${CORES[6][1]}" aria-label="Resumo do dia">
+      <div class="p-top"><span>Resumo</span><span>o dia todo</span></div>
+      <h2>No total</h2>
+      <div class="resumo">${D.indicadores().map(i => `<div><b>${i.v}</b><span>${i.u} ${i.l}</span></div>`).join('')}</div>
+    </section>`;
+  el.scrollLeft = x;
+  dots.innerHTML = Array.from({length: ms.length + 1}, () => '<i></i>').join('');
+  marcar();
+}
+function marcar(){
+  const k = Math.round(el.scrollLeft / el.clientWidth);
+  dots.style.color = CORES[k] ? CORES[k][1] : '#fff';
+  [...dots.children].forEach((d,i) => d.classList.toggle('on', i === k));
+}
+el.addEventListener('scroll', marcar, {passive:true});
+D.init();
+</script>
+</body>
+</html>

@@ -155,6 +155,7 @@ body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{displa
 <script>
 window.OPCOES_EXTRA = [{ k: 'lista', t: 'Lista do prato', v: [['pilulas','Pílulas'],['linhas','Linhas'],['cartoes','Cartões'],['mosaico','Mosaico']] }];
 </script>
+<script src="vazio.js"></script>
 <script src="motor.js"></script>
 <script>
 const CORES = ['#FFD166','#FFB4A2','#B8E0D2','#CDB4DB','#A2D2FF','#FFC8DD'];
@@ -320,6 +321,29 @@ if (!(window.CSS && CSS.supports('animation-timeline: scroll()'))) {
   const rd = renderDieta; renderDieta = D => { rd(D); encolher(); };
 }
 D.init();
+
+/* abertura (~750 ms): o prato nasce no meio da tela, a mancha gira por trás, os ícones da primeira
+   refeição saltam em volta e o prato sobe para o lugar dele enquanto o resto da tela aparece.
+   Usa as propriedades translate/scale/rotate/opacity, que não brigam com os transforms do
+   carrossel e da rolagem. Roda antes da primeira pintura, então não há piscada. */
+(function abertura(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !palco.cena || !Element.prototype.animate) return;
+  const SUAVE = 'cubic-bezier(.32,.72,0,1)', MOLA = 'cubic-bezier(.3,1.45,.5,1)';
+  const r = palco.cena.getBoundingClientRect();
+  const dy = Math.max(0, innerHeight / 2 - (r.top + r.height / 2));
+  const a = (el, kf, o) => el && el.animate(kf, Object.assign({ fill: 'backwards', easing: SUAVE }, o));
+  const c0 = camadas[0] || {};
+  a(palco, [{ translate: `0 ${dy}px` }, { translate: '0 0' }], { duration: 430, delay: 320 });
+  a(c0.mancha, [{ scale: .2, rotate: '-110deg', opacity: 0 }, { scale: 1, rotate: '0deg', opacity: 1 }], { duration: 440 });
+  a(prato, [{ scale: .45, opacity: 0 }, { scale: 1, opacity: 1 }], { duration: 380, easing: MOLA });
+  (c0.ics || []).forEach((ic, i) => a(ic.b.parentNode, [{ scale: 0 }, { scale: 1 }], { duration: 300, delay: 150 + i * 35, easing: MOLA }));
+  a(palco.querySelector('.centros'), [{ opacity: 0, scale: .85 }, { opacity: 1, scale: 1 }], { duration: 300, delay: 230 });
+  const resto = { duration: 330, delay: 420 };
+  a(palco.querySelector('.p-cab'), [{ opacity: 0, translate: '0 10px' }, { opacity: 1, translate: '0 0' }], resto);
+  a(pager, [{ opacity: 0 }, { opacity: 1 }], resto);
+  a(car, [{ opacity: 0, translate: '0 28px' }, { opacity: 1, translate: '0 0' }], resto);
+  a(document.getElementById('tabbar'), [{ translate: '0 90px' }, { translate: '0 0' }], resto);
+})();
 </script>
 </body>
 </html>

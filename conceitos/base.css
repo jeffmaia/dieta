@@ -167,6 +167,27 @@ body[data-troca="cheia"] .sh-grab{visibility:hidden;margin-top:4px}
   background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:999px;font-size:13.5px;font-weight:600;
   opacity:0;pointer-events:none;transition:.25s;max-width:calc(100vw - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+/* estado vazio de Alterações: alimento do prato e opção trocam de lugar pelas setas (vazio.js) */
+.vz{display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:30px}
+.vz h2{font-family:var(--display);font-weight:var(--display-w,700);font-size:24px;line-height:1.1;margin:26px 0 0;letter-spacing:-.01em}
+.vz p{color:var(--muted);font-size:14.5px;margin:10px 0 0;max-width:290px}
+.vz-cta{margin-top:22px;min-height:50px;padding:0 22px;border-radius:var(--radius);border:1.5px solid var(--line);font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.vz-cta svg{width:18px;height:18px}
+.vz-palco{position:relative;width:320px;height:240px;flex:0 0 auto}
+.vz-ic{width:1em;height:1em;display:block}
+.vz-setas{position:absolute;inset:0;overflow:visible}
+.vz-setas path{fill:none;stroke:#DDC5A8;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.vz-setas .vz-arco{stroke-dasharray:2 7;animation:vz-flui 1.2s linear infinite}
+@keyframes vz-flui{to{stroke-dashoffset:-18}}
+.vz-setas.ativa path{stroke:var(--accent)}
+.vz-prato{position:absolute;width:118px;height:118px;border-radius:50%;background:#fff;box-shadow:0 12px 26px rgba(58,38,24,.16),inset 0 0 0 7px #fff,inset 0 0 0 8.5px var(--line)}
+.vz-vaga{position:absolute;width:98px;height:98px;border-radius:50%;border:2px dashed var(--line)}
+.vz-orb{position:absolute;inset:0}
+.vz-b{position:absolute;width:88px;height:88px;margin:-44px;border-radius:50%;background:color-mix(in srgb,var(--c,#FFD166) 40%,#fff);display:grid;place-items:center;font-size:66px}
+.vz-trk{position:absolute;left:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:var(--fg);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 4px var(--bg)}
+.vz-trk svg{width:56%;height:56%}
+.vz-rot{position:absolute;width:120px;margin-left:-60px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}

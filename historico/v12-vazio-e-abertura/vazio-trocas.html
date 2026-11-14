@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alterações vazia · 3 opções</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@property --cor{syntax:'<color>';inherits:true;initial-value:#FFD166}
+:root{
+  --bg:#FFF6EA;--fg:#3A2618;--muted:#8A7461;--line:#EBDAC5;--surface:#FFFBF5;
+  --accent:#E8452C;--accent-fg:#FFF6EA;
+  --bar:#3A2618;--bar-fg:#E8D5C0;--bar-on:#FFD166;--bar-on-fg:#3A2618;
+  --font:"IBM Plex Sans",system-ui,sans-serif;--display:"Fredoka",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#EFE3D2;color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.4}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+.ic{width:1em;height:1em;display:block}
+
+/* página de apresentação */
+.topo{max-width:1240px;margin:0 auto;padding:40px 16px 8px}
+.topo small{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.topo h1{font-family:var(--display);font-weight:600;font-size:34px;line-height:1.05;margin:6px 0 8px;letter-spacing:-.01em}
+.topo p{margin:0;color:var(--muted);max-width:62ch;font-size:15px}
+.opcoes{max-width:1240px;margin:0 auto;padding:28px 16px 60px;display:flex;flex-wrap:wrap;gap:36px 28px;justify-content:center}
+.opcao{width:min(375px,100%)}
+.legenda{margin-top:16px;padding:0 6px}
+.legenda b{font-family:var(--display);font-weight:600;font-size:21px;display:flex;align-items:center;gap:10px}
+.legenda b span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--fg);color:var(--bg);font-size:14px}
+.legenda p{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+/* celular */
+.fone{position:relative;width:100%;height:760px;border-radius:46px;background:var(--bg);overflow:hidden;
+  box-shadow:0 0 0 10px #2B1C12,0 30px 60px rgba(58,38,24,.28)}
+.pg{padding:44px 20px 0}
+.pg h1{font-family:var(--display);font-size:42px;line-height:1;margin:0;letter-spacing:-.025em;font-weight:600}
+.pg-sub{color:var(--muted);margin:10px 0 0;font-size:14.5px}
+.vazio{display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:34px}
+.vazio h2{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.1;margin:28px 0 0;letter-spacing:-.01em}
+.vazio p{color:var(--muted);font-size:14.5px;margin:10px 0 0;max-width:290px}
+.vazio .cta{margin-top:22px;min-height:50px;padding:0 22px;border-radius:20px;border:1.5px solid var(--line);font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.vazio .cta svg{width:18px;height:18px}
+.palco{position:relative;width:320px;height:240px;flex:0 0 auto}
+
+/* barra de abas, igual à do app */
+.tabbar{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;display:flex;padding:6px;border-radius:999px;background:var(--bar);color:var(--bar-fg);box-shadow:0 10px 34px rgba(0,0,0,.22)}
+.tabbar span{display:flex;align-items:center;gap:7px;height:46px;min-width:46px;justify-content:center;padding:0 13px;border-radius:999px;font-size:13.5px;font-weight:600}
+.tabbar .on{background:var(--bar-on);color:var(--bar-on-fg)}
+.tabbar svg{width:20px;height:20px}
+
+/* selo de troca (mesmo das bolhas do prato) */
+.trk{position:absolute;display:grid;place-items:center;border-radius:50%;background:var(--fg);color:#fff;box-shadow:0 0 0 2.5px #fff}
+.trk svg{width:56%;height:56%}
+
+/* ---------- A · prato que troca ---------- */
+.pA{position:absolute;left:50%;top:50%;width:220px;height:220px;margin:-110px 0 0 -110px}
+.pA-mancha{position:absolute;inset:-4% -9%;background:var(--cor);border-radius:58% 42% 55% 45%/48% 56% 44% 52%;transition:--cor .7s}
+.pA{transition:--cor .7s}
+.pA-prato{position:absolute;inset:0;border-radius:50%;background:#fff;box-shadow:0 14px 30px rgba(58,38,24,.16),inset 0 0 0 10px #fff,inset 0 0 0 11.5px var(--line)}
+.pA-centro{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.pA-centro b{font-family:var(--display);font-weight:600;font-size:26px;line-height:1}
+.pA-centro span{font-size:12px;color:var(--muted);font-weight:500;margin-top:3px;display:block}
+.pA-anel{position:absolute;inset:0}
+.bA{position:absolute;width:66px;height:66px;margin:-33px}
+.bA-in{position:absolute;inset:0;border-radius:50%;background:color-mix(in srgb,var(--cor) 38%,#fff);display:grid;place-items:center;font-size:52px;transition:box-shadow .25s}
+.bA-in>*{grid-area:1/1}
+.bA.alt .bA-in{box-shadow:0 0 0 3px var(--accent)}
+.bA .trk{right:-3px;bottom:-3px;width:24px;height:24px;transform:scale(0)}
+.bA.alt .trk{background:var(--accent)}
+
+/* ---------- B · troca de lugar ---------- */
+.pB-setas{position:absolute;inset:0;overflow:visible}
+.pB-setas path{fill:none;stroke:#DDC5A8;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.pB-setas .arco{stroke-dasharray:2 7;animation:flui 1.2s linear infinite}
+@keyframes flui{to{stroke-dashoffset:-18}}
+.pB-setas.ativa path{stroke:var(--accent);transition:stroke .2s}
+.pB-prato{position:absolute;width:118px;height:118px;border-radius:50%;background:#fff;box-shadow:0 12px 26px rgba(58,38,24,.16),inset 0 0 0 7px #fff,inset 0 0 0 8.5px var(--line)}
+.pB-vaga{position:absolute;width:98px;height:98px;border-radius:50%;border:2px dashed var(--line)}
+.pB-orb{position:absolute;inset:0}
+.bB{position:absolute;width:88px;height:88px;margin:-44px;border-radius:50%;background:color-mix(in srgb,var(--c,#FFD166) 40%,#fff);display:grid;place-items:center;font-size:66px}
+.pB-trk{left:50%;top:50%;width:40px;height:40px;margin:-20px;box-shadow:0 0 0 4px var(--bg)}
+.pB-rot{position:absolute;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);width:120px;text-align:center;margin-left:-60px}
+
+/* ---------- C · de → para ---------- */
+.cC{position:absolute;left:14px;right:6px;top:22px}
+.pl{position:relative;display:flex;align-items:center;gap:12px;height:76px;padding:0 10px 0 0;margin-left:12px;border-radius:999px;background:color-mix(in srgb,var(--cor) 26%,#fff);text-align:left}
+.pl-e{position:relative;width:68px;height:68px;flex:0 0 auto;margin-left:-12px;border-radius:50%;background:#fff;box-shadow:0 6px 16px rgba(58,38,24,.14);display:grid;place-items:center;font-size:54px;overflow:hidden;transition:box-shadow .25s}
+.pl-n{flex:1;min-width:0;font-size:15.5px;font-weight:500;line-height:22px;height:22px;overflow:hidden;position:relative}
+.pl-n b{font-weight:500;position:relative;white-space:nowrap}
+.pl-q{background:#fff;border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.risco{position:absolute;left:-2px;right:-2px;top:50%;height:2px;margin-top:-1px;background:var(--fg);border-radius:1px;transform:scaleX(0);transform-origin:left}
+.pl-de.feito{opacity:.55}
+.cC-mid{position:relative;height:40px}
+.cC-mid::before{content:"";position:absolute;left:46px;top:-4px;bottom:-4px;border-left:2px dashed var(--line)}
+.cC-mid .trk{left:33px;top:6px;width:28px;height:28px}
+.pl-para{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line);transition:background .35s,box-shadow .35s}
+.pl-para .pl-e{background:transparent;box-shadow:inset 0 0 0 2px var(--line);border:0}
+.pl-para.cheia{background:color-mix(in srgb,var(--cor) 26%,#fff);box-shadow:none}
+.pl-para.cheia .pl-e{background:#fff;box-shadow:0 6px 16px rgba(58,38,24,.14)}
+.pl-para.pronta .pl-e{box-shadow:0 0 0 3px var(--accent),0 6px 16px rgba(58,38,24,.14)}
+.pl-para.pronta .pl-n{color:var(--accent)}
+.col{position:absolute;left:0;top:0;width:68px}
+.col i{display:grid;place-items:center;height:68px;font-size:54px}
+.colN{position:absolute;left:0;top:0;right:0}
+.colN i{display:block;height:22px;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph{display:block;height:10px;width:110px;border-radius:5px;background:var(--line);margin-top:6px}
+.pl-para .pl-q,.pl-para .ok{opacity:0}
+.ok{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;flex:0 0 auto}
+.ok svg{width:15px;height:15px}
+.cC-pe{margin-top:16px;text-align:left;padding-left:12px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cC-pe b{color:var(--fg)}
+
+@media (prefers-reduced-motion:reduce){.pB-setas .arco{animation:none}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <small>Alterações · estado vazio</small>
+  <h1>Três ilustrações para quando não há trocas</h1>
+  <p>As três usam os ícones próprios dos alimentos e o mesmo selo de troca das bolhas do prato. As animações ficam em loop e param se o celular estiver com movimento reduzido.</p>
+</header>
+
+<main class="opcoes" id="opcoes"></main>
+
+<script src="icones/a.js"></script><script src="icones/b.js"></script><script src="icones/c.js"></script>
+<script>
+const SWAP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3l4 4-4 4"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h12a4 4 0 0 0 4-4"/></svg>';
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const TAB = {
+  dieta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>',
+  alt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11"/><path d="M4 12h16"/><path d="M4 17h8"/><circle cx="18" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>',
+  mercado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>',
+  grade: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>'
+};
+const ic = n => '<svg class="ic" viewBox="0 0 64 64" aria-hidden="true">' + (ICONES[n] || '') + '</svg>';
+const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const espera = ms => new Promise(r => setTimeout(r, ms));
+const MOLA = 'cubic-bezier(.3,1.5,.5,1)', SUAVE = 'cubic-bezier(.32,.72,0,1)', IDA = 'cubic-bezier(.65,0,.35,1)';
+/* anima e deixa o estado final gravado no estilo (sem acumular animações presas) */
+function anima(el, kf, o){
+  const fim = kf[kf.length - 1];
+  for (const k in fim) if (k !== 'offset' && k !== 'easing') el.style[k] = fim[k];
+  if (calmo) return Promise.resolve();
+  return el.animate(kf, Object.assign({ fill: 'backwards' }, o)).finished.catch(() => {});
+}
+
+const OPCOES = [
+  { id: 'A', nome: 'Prato que troca', txt: 'Uma versão pequena do prato da tela Dieta. Um ícone de cada vez ganha o selo de troca, gira e vira outro alimento do mesmo grupo; depois o prato gira para a próxima refeição.' },
+  { id: 'B', nome: 'Troca de lugar', txt: 'O ícone de troca vira cena: o alimento do prato e uma opção do mesmo grupo trocam de lugar pelas duas setas. A opção que saiu dá vez à próxima.' },
+  { id: 'C', nome: 'De → para', txt: 'Antecipa o que a página vai mostrar: o alimento original é riscado e a opção nova roda como uma roleta entre substitutos até parar, com a quantidade equivalente.' }
+];
+
+document.getElementById('opcoes').innerHTML = OPCOES.map((o, k) => `
+  <section class="opcao">
+    <div class="fone">
+      <div class="pg">
+        <h1>Alterações</h1>
+        <p class="pg-sub">Sua dieta está igual à original.</p>
+        <div class="vazio">
+          <div class="palco" id="palco${o.id}" aria-hidden="true"></div>
+          <h2>Nenhuma troca ainda</h2>
+          <p>Toque no selo de troca de um alimento para escolher outro do mesmo grupo. Ele aparece aqui e dá para desfazer quando quiser.</p>
+          <button class="cta">${TAB.dieta}Ir para a dieta</button>
+        </div>
+      </div>
+      <nav class="tabbar"><span>${TAB.dieta}</span><span class="on">${TAB.alt}Alterações</span><span>${TAB.mercado}</span><span>${TAB.grade}</span></nav>
+    </div>
+    <div class="legenda"><b><span>${o.id}</span>${o.nome}</b><p>${o.txt}</p></div>
+  </section>`).join('');
+
+/* =========================================================
+   A · prato que troca
+   ========================================================= */
+(function(){
+  const palco = document.getElementById('palcoA');
+  palco.innerHTML = '<div class="pA"><div class="pA-mancha"></div><div class="pA-prato"></div><div class="pA-centro"><div><b></b><span></span></div></div><div class="pA-anel"></div></div>';
+  const pA = palco.querySelector('.pA'), anel = palco.querySelector('.pA-anel'), mancha = palco.querySelector('.pA-mancha'),
+        cB = palco.querySelector('.pA-centro b'), cS = palco.querySelector('.pA-centro span');
+  const REF = [
+    { cor: '#FFB4A2', hora: '07:30', kcal: '410 kcal', itens: ['Pão francês', 'Ovos', 'Banana', 'Leite desnatado'], trocas: [[0, 'Tapioca'], [2, 'Morango']] },
+    { cor: '#FFD166', hora: '12:30', kcal: '640 kcal', itens: ['Arroz branco cozido', 'Feijão cozido', 'Brócolis', 'Cenoura'], trocas: [[0, 'Batata doce cozida'], [1, 'Lentilha cozida']] },
+    { cor: '#B8E0D2', hora: '16:00', kcal: '280 kcal', itens: ['Iogurte natural', 'Granola', 'Maçã', 'Castanha do pará'], trocas: [[2, 'Pera'], [1, 'Farelo de aveia']] }
+  ];
+  const R = 220 * .335, C = 110;
+  function monta(r){
+    pA.style.setProperty('--cor', r.cor);
+    cB.textContent = r.hora; cS.textContent = r.kcal;
+    anel.innerHTML = r.itens.map((n, j) => {
+      const a = (j / r.itens.length * 360 - 90) * Math.PI / 180;
+      return `<div class="bA" style="left:${(C + R * Math.cos(a)).toFixed(1)}px;top:${(C + R * Math.sin(a)).toFixed(1)}px"><div class="bA-in"><span>${ic(n)}</span></div><span class="trk">${SWAP}</span></div>`;
+    }).join('');
+    return [...anel.children];
+  }
+  async function troca(b, novo){
+    const inn = b.querySelector('.bA-in'), trk = b.querySelector('.trk'), velho = inn.firstElementChild;
+    await anima(trk, [{ transform: 'scale(0) rotate(0deg)' }, { transform: 'scale(1) rotate(0deg)' }], { duration: 320, easing: MOLA });
+    await espera(150);
+    const n = document.createElement('span'); n.innerHTML = ic(novo); n.style.transform = 'scale(0)';
+    inn.append(n);
+    b.classList.add('alt');
+    await Promise.all([
+      anima(trk, [{ transform: 'scale(1) rotate(0deg)' }, { transform: 'scale(1) rotate(180deg)' }], { duration: 560, easing: IDA }),
+      anima(inn, [{ transform: 'scale(1)' }, { transform: 'scale(.88)', offset: .35 }, { transform: 'scale(1.06)', offset: .75 }, { transform: 'scale(1)' }], { duration: 620 }),
+      anima(velho, [{ transform: 'rotate(0deg) scale(1)', opacity: 1 }, { transform: 'rotate(-140deg) scale(0)', opacity: 0 }], { duration: 340, easing: 'cubic-bezier(.5,0,.75,0)' })
+        .then(() => anima(n, [{ transform: 'rotate(140deg) scale(0)' }, { transform: 'rotate(0deg) scale(1)' }], { duration: 480, easing: MOLA }))
+    ]);
+    velho.remove();
+  }
+  async function laco(){
+    let k = 0;
+    let bs = monta(REF[0]);
+    if (calmo) { await troca(bs[0], REF[0].trocas[0][1]); return; }
+    for (;;) {
+      const r = REF[k % REF.length];
+      await espera(900);
+      for (const [j, novo] of r.trocas) { await troca(bs[j], novo); await espera(900); }
+      await espera(700);
+      /* gira para fora como um anel, a mancha muda de cor e a próxima refeição entra girando */
+      const c = palco.querySelector('.pA-centro');
+      await Promise.all([
+        anima(anel, [{ transform: 'rotate(0deg) scale(1)', opacity: 1 }, { transform: 'rotate(110deg) scale(.55)', opacity: 0 }], { duration: 460, easing: 'cubic-bezier(.55,0,.8,.3)' }),
+        anima(c, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.8)' }], { duration: 300 }),
+        anima(mancha, [{ transform: `rotate(${k * 40}deg)` }, { transform: `rotate(${k * 40 + 40}deg)` }], { duration: 900, easing: SUAVE })
+      ]);
+      k++;
+      bs = monta(REF[k % REF.length]);
+      await Promise.all([
+        anima(anel, [{ transform: 'rotate(-110deg) scale(.55)', opacity: 0 }, { transform: 'rotate(0deg) scale(1)', opacity: 1 }], { duration: 620, easing: SUAVE }),
+        anima(c, [{ opacity: 0, transform: 'scale(.8)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 420, delay: 180, easing: SUAVE })
+      ]);
+    }
+  }
+  laco();
+})();
+
+/* =========================================================
+   B · troca de lugar
+   ========================================================= */
+(function(){
+  const palco = document.getElementById('palcoB');
+  const W = 320, H = 240, cx = W / 2, cy = 112, r = 96;
+  const L = { x: cx - r, y: cy }, D = { x: cx + r, y: cy };
+  const pt = g => { const a = g * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  /* duas setas curvas como no ícone de troca: por cima vai para a direita, por baixo volta para a esquerda */
+  function seta(a0, a1){
+    const [x0, y0] = pt(a0), [x1, y1] = pt(a1), t = a1 * Math.PI / 180;
+    const tx = -Math.sin(t), ty = Math.cos(t), nx = -ty, ny = tx, s = 9;
+    const p1 = [x1 - tx * s + nx * s * .8, y1 - ty * s + ny * s * .8], p2 = [x1 - tx * s - nx * s * .8, y1 - ty * s - ny * s * .8];
+    return `<path class="arco" d="M${x0.toFixed(1)} ${y0.toFixed(1)}A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}"/>`
+      + `<path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)}L${x1.toFixed(1)} ${y1.toFixed(1)}L${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
+  }
+  palco.innerHTML = `<div class="pB-prato" style="left:${L.x - 59}px;top:${L.y - 59}px"></div>`
+    + `<div class="pB-vaga" style="left:${D.x - 49}px;top:${D.y - 49}px"></div>`
+    + `<svg class="pB-setas" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${seta(217, 323)}${seta(37, 143)}</svg>`
+    + `<div class="pB-orb" style="transform-origin:${cx}px ${cy}px"></div>`
+    + `<span class="trk pB-trk" style="top:${cy}px">${SWAP}</span>`
+    + `<span class="pB-rot" style="left:${L.x}px;top:${cy + 70}px">no prato</span><span class="pB-rot" style="left:${D.x}px;top:${cy + 70}px">opção</span>`;
+  const orb = palco.querySelector('.pB-orb'), setas = palco.querySelector('.pB-setas'), trk = palco.querySelector('.pB-trk'),
+        prato = palco.querySelector('.pB-prato');
+  const GR = [
+    { cor: '#FFD166', itens: ['Arroz branco cozido', 'Batata doce cozida', 'Mandioca cozida', 'Macarrão cozido'] },
+    { cor: '#FFB4A2', itens: ['Pão francês', 'Tapioca', 'Cuscuz de milho'] },
+    { cor: '#B8E0D2', itens: ['Banana', 'Morango', 'Manga', 'Kiwi'] }
+  ];
+  let ang = 0;
+  function bolha(nome, cor, lado){
+    const b = document.createElement('div');
+    b.className = 'bB'; b.style.setProperty('--c', cor); b.innerHTML = ic(nome);
+    const p = lado === 'L' ? L : D;
+    /* posição no referencial do orbitador, que já girou ang graus */
+    const a = -ang * Math.PI / 180, dx = p.x - cx, dy = p.y - cy;
+    b.style.left = (cx + dx * Math.cos(a) - dy * Math.sin(a)).toFixed(1) + 'px';
+    b.style.top = (cy + dx * Math.sin(a) + dy * Math.cos(a)).toFixed(1) + 'px';
+    b.style.transform = `rotate(${-ang}deg) scale(0)`;
+    orb.append(b);
+    return b;
+  }
+  const entra = b => anima(b, [{ transform: `rotate(${-ang}deg) scale(0)` }, { transform: `rotate(${-ang}deg) scale(1)` }], { duration: 460, easing: MOLA });
+  const sai = b => anima(b, [{ transform: `rotate(${-ang}deg) scale(1)`, opacity: 1 }, { transform: `rotate(${-ang}deg) scale(.2)`, opacity: 0 }], { duration: 300, easing: 'cubic-bezier(.5,0,.75,0)' }).then(() => b.remove());
+  async function gira(bs){
+    const a0 = ang; ang += 180;
+    setas.classList.add('ativa');
+    await Promise.all([
+      anima(orb, [{ transform: `rotate(${a0}deg)` }, { transform: `rotate(${ang}deg)` }], { duration: 950, easing: IDA }),
+      anima(trk, [{ transform: `rotate(${a0}deg)` }, { transform: `rotate(${ang}deg)` }], { duration: 950, easing: IDA }),
+      ...bs.map(b => anima(b, [{ transform: `rotate(${-a0}deg) scale(1)` }, { transform: `rotate(${-(a0 + 90)}deg) scale(1.08)` }, { transform: `rotate(${-ang}deg) scale(1)` }], { duration: 950, easing: IDA }))
+    ]);
+    setas.classList.remove('ativa');
+    anima(prato, [{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 380, easing: SUAVE });
+  }
+  async function laco(){
+    let g = 0;
+    if (calmo) { bolha(GR[0].itens[0], GR[0].cor, 'L'); bolha(GR[0].itens[1], GR[0].cor, 'D'); orb.querySelectorAll('.bB').forEach(b => b.style.transform = 'scale(1)'); return; }
+    for (;;) {
+      const gr = GR[g % GR.length];
+      let noPrato = bolha(gr.itens[0], gr.cor, 'L');
+      await entra(noPrato);
+      for (let i = 1; i < gr.itens.length; i++) {
+        await espera(350);
+        const op = bolha(gr.itens[i], gr.cor, 'D');
+        await entra(op);
+        await espera(650);
+        await gira([noPrato, op]);
+        /* quem saiu do prato fica na vaga de opção e some */
+        await espera(450);
+        await sai(noPrato);
+        noPrato = op;
+      }
+      await espera(900);
+      await sai(noPrato);
+      g++;
+    }
+  }
+  laco();
+})();
+
+/* =========================================================
+   C · de → para
+   ========================================================= */
+(function(){
+  const palco = document.getElementById('palcoC');
+  const CASOS = [
+    { cor: '#FFD166', de: ['Arroz branco cozido', 'Arroz branco', '4 col.'], roleta: [['Mandioca cozida', 'Mandioca'], ['Macarrão cozido', 'Macarrão'], ['Inhame cozido', 'Inhame'], ['Cará cozido', 'Cará'], ['Batata baroa cozida', 'Batata baroa']], para: ['Batata doce cozida', 'Batata doce', '150 g'] },
+    { cor: '#FFB4A2', de: ['Pão francês', 'Pão francês', '1 un.'], roleta: [['Cuscuz de milho', 'Cuscuz'], ['Pão de forma', 'Pão de forma'], ['Biscoito de arroz grande', 'Biscoito de arroz'], ['Pão bisnaguinha', 'Bisnaguinha'], ['Granola', 'Granola']], para: ['Tapioca', 'Tapioca', '40 g'] },
+    { cor: '#B8E0D2', de: ['Banana', 'Banana', '1 un.'], roleta: [['Maçã', 'Maçã'], ['Pera', 'Pera'], ['Kiwi', 'Kiwi'], ['Manga', 'Manga'], ['Goiaba', 'Goiaba']], para: ['Morango', 'Morango', '10 un.'] }
+  ];
+  function monta(c){
+    const lista = [...c.roleta, c.para];
+    palco.innerHTML = `<div class="cC" style="--cor:${c.cor}">
+      <div class="pl pl-de"><span class="pl-e">${ic(c.de[0])}</span><span class="pl-n"><b>${c.de[1]}<i class="risco"></i></b></span><span class="pl-q">${c.de[2]}</span></div>
+      <div class="cC-mid"><span class="trk">${SWAP}</span></div>
+      <div class="pl pl-para"><span class="pl-e"><span class="col" style="opacity:0">${lista.map(x => '<i>' + ic(x[0]) + '</i>').join('')}</span></span>
+        <span class="pl-n"><span class="ph"></span><span class="colN" style="opacity:0">${lista.map(x => '<i>' + x[1] + '</i>').join('')}</span></span>
+        <span class="pl-q">${c.para[2]}</span><span class="ok">${CHECK}</span></div>
+    </div>`;
+    return { cC: palco.querySelector('.cC'), de: palco.querySelector('.pl-de'), risco: palco.querySelector('.risco'), trk: palco.querySelector('.cC-mid .trk'),
+      para: palco.querySelector('.pl-para'), col: palco.querySelector('.col'), colN: palco.querySelector('.colN'), ph: palco.querySelector('.ph'),
+      q: palco.querySelector('.pl-para .pl-q'), ok: palco.querySelector('.ok'), n: lista.length };
+  }
+  async function roda(e){
+    await anima(e.risco, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 380, easing: SUAVE });
+    e.de.classList.add('feito');
+    await anima(e.trk, [{ transform: 'rotate(0deg)' }, { transform: 'rotate(180deg)' }], { duration: 520, easing: IDA });
+    e.para.classList.add('cheia');
+    e.ph.style.display = 'none';
+    e.col.style.opacity = 1; e.colN.style.opacity = 1;
+    const fim = (e.n - 1);
+    await Promise.all([
+      anima(e.col, [{ transform: 'translateY(0)' }, { transform: `translateY(${-fim * 68}px)` }], { duration: 1500, easing: 'cubic-bezier(.12,.6,.18,1)' }),
+      anima(e.colN, [{ transform: 'translateY(0)' }, { transform: `translateY(${-fim * 22}px)` }], { duration: 1500, easing: 'cubic-bezier(.12,.6,.18,1)' })
+    ]);
+    e.para.classList.add('pronta');
+    await Promise.all([
+      anima(e.ok, [{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 380, easing: MOLA }),
+      anima(e.q, [{ opacity: 0, transform: 'translateX(8px)' }, { opacity: 1, transform: 'translateX(0)' }], { duration: 320, delay: 80, easing: SUAVE })
+    ]);
+  }
+  async function laco(){
+    let k = 0;
+    if (calmo) { await roda(monta(CASOS[0])); return; }
+    for (;;) {
+      const e = monta(CASOS[k % CASOS.length]);
+      await anima(e.cC, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 420, easing: SUAVE });
+      await espera(600);
+      await roda(e);
+      await espera(2000);
+      await anima(e.cC, [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-14px)' }], { duration: 320, easing: 'cubic-bezier(.5,0,.75,0)' });
+      k++;
+    }
+  }
+  laco();
+})();
+</script>
+</body>
+</html>
