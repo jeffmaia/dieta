@@ -385,6 +385,8 @@ function arrastar(el) {
 
 /* ---------- eventos ---------- */
 function ligar() {
+  /* o iOS ignora user-scalable=no: bloqueia o gesto de pinça (o toque duplo já sai pelo touch-action do CSS) */
+  ['gesturestart', 'gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
   if ($('dieta')) arrastar($('dieta'));
   document.addEventListener('click', e => {
     if (!e.target.closest('#opc,#tbOpc')) $('opc').classList.remove('on');
@@ -392,6 +394,8 @@ function ligar() {
     const t = e.target.closest('[data-swap],[data-view],[data-reset-item],[data-reset-meal],[data-reset-all],[data-dias],[data-shi],[data-opt],[data-frac],[data-ui],[data-mk],[data-mk-limpar],[data-mk-todos],#shClose,#scrim,#shSave,#shReset,#mkEnviar,#shFim,#tbMenu,#tbOpc');
     if (!t) return;
     const d = t.dataset;
+    /* toque atrasado na troca depois que ela já fechou */
+    if (!cur && (d.shi || d.opt || d.frac || t.id === 'shSave' || t.id === 'shReset' || t.id === 'shFim')) return;
     if (t.id === 'shClose' || t.id === 'scrim') fechar();
     else if (t.id === 'shSave') salvar();
     else if (t.id === 'mkEnviar') enviarMercado();

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="moldura.js"></script>
 <title>Conceito 4 · Prato</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,10 +17,10 @@
   --font:"IBM Plex Sans",system-ui,sans-serif;--display:"Fredoka",system-ui,sans-serif;--display-w:600;
 }
 body{font-feature-settings:"tnum" 1}
-#palcoWrap{position:relative}
+#palcoWrap{position:relative;overflow-x:clip}
 #dieta{position:relative;display:flex;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 #dieta::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;width:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
+.slide{flex:0 0 100%;width:100%;align-self:flex-start;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
   padding:calc(50px + env(safe-area-inset-top)) 0 calc(130px + env(safe-area-inset-bottom))}
 .cab{padding:0 24px;text-align:center;will-change:transform,opacity}
 .cab small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
@@ -113,10 +113,18 @@ body{font-feature-settings:"tnum" 1}
 .tot div{width:150px;height:150px;border-radius:50%;display:grid;place-content:center;text-align:center;background:var(--cor)}
 .tot b{font-family:var(--display);font-size:36px;font-weight:600;line-height:1}
 .tot span{font-size:13px;margin-top:4px;font-weight:500}
-.pager{position:fixed;top:calc(18px + env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;gap:7px;z-index:5}
+.pager{position:absolute;top:calc(18px + env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;gap:7px;z-index:5}
 .pager button{position:relative;width:9px;height:9px;border-radius:5px;background:var(--fg);opacity:.2;padding:0;transition:width .25s cubic-bezier(.32,.72,0,1),opacity .2s}
 .pager button::after{content:"";position:absolute;inset:-14px -3px}
 .pager button.on{width:26px;opacity:.85}
+/* ao rolar: prato, ícones e fundo encolhem até a metade; hora e kcal somem */
+.cena{transform-origin:50% 0}
+@keyframes encolhe{to{transform:scale(.5)}}
+@keyframes apaga{to{opacity:0}}
+@supports (animation-timeline: scroll()){
+  #palco .cena,.slide .cena{animation:encolhe linear both;animation-timeline:scroll(root block);animation-range:0 320px}
+  #palco .centros{animation:apaga linear both;animation-timeline:scroll(root block);animation-range:0 160px}
+}
 body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{display:none}
 /* camada visual fixa por cima do carrossel; os toques passam para os botões invisíveis da tela */
 #palco{position:absolute;left:0;right:0;top:calc(50px + env(safe-area-inset-top));z-index:4;pointer-events:none}
@@ -195,7 +203,7 @@ function renderDieta(D){
     <div class="cena">
       ${dados.map((_, k) => `<div class="mancha" style="--cor:${CORES[k]}"></div>`).join('')}
       <div class="prato"></div>
-      ${dados.map(({m}) => `<div class="centro"><div><b>${m.hora}</b><span>${m.kcal} kcal</span></div></div>`).join('')}
+      <div class="centros" style="position:absolute;inset:0">${dados.map(({m}) => `<div class="centro"><div><b>${m.hora}</b><span>${m.kcal} kcal</span></div></div>`).join('')}</div>
       ${dados.map(({ls, n, S}, k) => `<div class="grupo" style="--cor:${CORES[k]};--S:calc(var(--D)*${S.toFixed(3)});position:absolute;inset:0">${slots(D, ls, n, true)}</div>`).join('')}
     </div>`;
 
@@ -241,8 +249,12 @@ function quadro(){
   let atual = 0, melhor = 1e9;
   fatias.forEach((f, k) => { const dd = Math.abs(f.s.offsetLeft - x); if (dd < melhor) { melhor = dd; atual = k; } });
   if (x >= max - 2) atual = fatias.length - 1;
+  const fr = x / (car.clientWidth || 1), k0 = Math.abs(fr - Math.round(fr)) > .01 ? (fr > atual ? atual + 1 : atual - 1) : -1;
   [...pager.children].forEach((b, k) => b.classList.toggle('on', k === atual));
   fatias.atual = atual;
+  /* a página só é tão alta quanto a refeição atual: sem espaço vazio no fim da rolagem */
+  const alt = Math.max(fatias[atual].s.offsetHeight, k0 >= 0 ? fatias[k0].s.offsetHeight : 0);
+  if (car.style.height !== alt + 'px') car.style.height = alt + 'px';
 
   const resumo = fatias[nMeals];
   const dr = cl((resumo.s.offsetLeft - x) / W);
@@ -273,6 +285,18 @@ function quadro(){
 }
 car.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(quadro); }, { passive: true });
 addEventListener('resize', quadro);
+/* navegadores sem animação ligada à rolagem: mesmo efeito por script */
+if (!(window.CSS && CSS.supports('animation-timeline: scroll()'))) {
+  let r2 = 0;
+  const encolher = () => {
+    r2 = 0;
+    const y = Math.max(0, scrollY), k = cl(y / 320);
+    document.querySelectorAll('#palco .cena,.slide .cena').forEach(c => { c.style.transform = `scale(${1 - .5 * k})`; });
+    const cs = document.querySelector('#palco .centros'); if (cs) cs.style.opacity = 1 - cl(y / 160);
+  };
+  addEventListener('scroll', () => { if (!r2) r2 = requestAnimationFrame(encolher); }, { passive: true });
+  const rd = renderDieta; renderDieta = D => { rd(D); encolher(); };
+}
 D.init();
 </script>
 </body>
