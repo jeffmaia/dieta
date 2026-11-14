@@ -11,7 +11,6 @@ mkdir -p "historico/$V"
 cp -R conceitos/. "historico/$V/"
 rm -f "historico/$V/.DS_Store"
 printf -- "- **%s** (%s): %s — [abrir](%s/index.html)\n" "$V" "$(date '+%Y-%m-%d %H:%M')" "$DESC" "$V" >> historico/README.md
-git add conceitos historico .claude/serve.js .claude/serve-lan.js .claude/launch.json design dados 2>/dev/null || true
 git add conceitos historico .claude/serve.js .claude/serve-lan.js .claude/launch.json design
 git commit -q -m "$V: $DESC
 

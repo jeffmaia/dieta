@@ -16,18 +16,18 @@
   --font:"IBM Plex Sans",system-ui,sans-serif;--display:"Fredoka",system-ui,sans-serif;--display-w:600;
 }
 body{font-feature-settings:"tnum" 1}
-#dieta{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+#palcoWrap{position:relative}
+#dieta{position:relative;display:flex;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 #dieta::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
-  padding:calc(50px + env(safe-area-inset-top)) 0 calc(130px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.slide::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;width:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
+  padding:calc(50px + env(safe-area-inset-top)) 0 calc(130px + env(safe-area-inset-bottom))}
 .cab{padding:0 24px;text-align:center;will-change:transform,opacity}
 .cab small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .cab h1{font-family:var(--display);font-size:36px;font-weight:600;line-height:1.05;letter-spacing:-.01em;margin:6px 0 0}
 
 /* palco: o prato fica parado; a mancha gira e os ícones fazem a transição */
 .cena{--D:min(88vw,344px);--R:calc(var(--D)*.335);position:relative;width:var(--D);height:var(--D);margin:22px auto 0;will-change:transform}
-.mancha{position:absolute;inset:-5% -9%;background:var(--cor);border-radius:58% 42% 55% 45%/48% 56% 44% 52%;will-change:transform,opacity}
+.mancha{position:absolute;inset:-3% -7%;background:var(--cor);border-radius:58% 42% 55% 45%/48% 56% 44% 52%;will-change:transform,opacity}
 .prato{position:absolute;inset:0;border-radius:50%;background:#fff;
   box-shadow:0 16px 34px rgba(58,38,24,.18),inset 0 0 0 calc(var(--D)*.045) #fff,inset 0 0 0 calc(var(--D)*.052) var(--line)}
 .centro{position:absolute;inset:0;display:grid;place-content:center;text-align:center;pointer-events:none;will-change:opacity,transform}
@@ -47,7 +47,7 @@ body{font-feature-settings:"tnum" 1}
 .bolha .trk svg{width:13px;height:13px}
 .slot.alt .trk{background:var(--accent)}
 
-.info{max-width:440px;margin:24px auto 0;padding:0 18px}
+.info{max-width:440px;margin:46px auto 0;padding:0 18px}
 .macros{display:flex;justify-content:center;gap:18px;font-size:13px;color:var(--muted);font-weight:500;margin-bottom:12px}
 .macros b{color:var(--fg);font-weight:600}
 .rest{margin-top:8px;text-align:center}
@@ -97,10 +97,10 @@ body{font-feature-settings:"tnum" 1}
 .l-mosaico .it-sw svg{width:14px;height:14px}
 
 /* lista D: pílulas com o ícone saltando para fora */
-.l-pilulas{list-style:none;margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:12px}
-.l-pilulas li>*{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;padding:8px 10px 8px 0;border-radius:999px;text-align:left;
+.l-pilulas{list-style:none;margin:0;padding:0 0 0 14px;display:flex;flex-direction:column;gap:18px}
+.l-pilulas li>*{display:flex;align-items:center;gap:14px;width:100%;min-height:84px;padding:6px 12px 6px 0;border-radius:999px;text-align:left;
   background:color-mix(in srgb,var(--cor) 26%,#fff)}
-.l-pilulas .it-e{width:86px;height:86px;font-size:86px;margin:-14px 0 -14px -18px;background:#fff;box-shadow:0 6px 16px rgba(58,38,24,.14)}
+.l-pilulas .it-e{width:78px;height:78px;font-size:78px;margin:0 0 0 -14px;background:#fff;box-shadow:0 6px 16px rgba(58,38,24,.14)}
 .l-pilulas .it-n{flex:1;min-width:0;font-size:16px}
 .l-pilulas .it-q{background:#fff;border-radius:999px;padding:7px 12px;font-size:14px;white-space:nowrap;max-width:44%;overflow:hidden;text-overflow:ellipsis}
 .l-pilulas .it-sw{width:36px;height:36px;border-radius:50%;background:var(--fg);color:#fff}
@@ -118,7 +118,7 @@ body{font-feature-settings:"tnum" 1}
 .pager button.on{width:26px;opacity:.85}
 body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{display:none}
 /* camada visual fixa por cima do carrossel; os toques passam para os botões invisíveis da tela */
-#palco{position:fixed;left:0;right:0;top:0;z-index:4;pointer-events:none}
+#palco{position:absolute;left:0;right:0;top:calc(50px + env(safe-area-inset-top));z-index:4;pointer-events:none}
 #palco .p-cab{display:grid}
 #palco .p-cab>*{grid-area:1/1}
 #palco .cena{margin-top:22px}
@@ -133,7 +133,7 @@ body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{displa
 <script src="dados.js"></script>
 <script src="icones/a.js"></script><script src="icones/b.js"></script><script src="icones/c.js"></script>
 <script>
-window.OPCOES_EXTRA = [{ k: 'lista', t: 'Lista do prato', v: [['linhas','Linhas'],['cartoes','Cartões'],['mosaico','Mosaico'],['pilulas','Pílulas']] }];
+window.OPCOES_EXTRA = [{ k: 'lista', t: 'Lista do prato', v: [['pilulas','Pílulas'],['linhas','Linhas'],['cartoes','Cartões'],['mosaico','Mosaico']] }];
 </script>
 <script src="motor.js"></script>
 <script>
@@ -153,7 +153,8 @@ function itemLista(D, x, tipo){
 }
 
 const palco = document.createElement('div'); palco.id = 'palco'; palco.setAttribute('aria-hidden', 'true');
-document.body.insertBefore(palco, car);
+const wrap = document.createElement('div'); wrap.id = 'palcoWrap';
+document.body.insertBefore(wrap, car); wrap.append(palco, car);
 let camadas = [], prato = null, nMeals = 0;
 
 function slots(D, ls, n, vis){
@@ -169,7 +170,6 @@ function slots(D, ls, n, vis){
 
 function renderDieta(D){
   const x = car.scrollLeft, ms = D.meals(), tipo = D.ui().lista;
-  const tops = fatias.map(f => f.s.scrollTop);
   nMeals = ms.length;
   const dados = ms.map(m => { const ls = m.itens.flatMap(it => it.linhas.map(l => ({it, l}))); return { m, ls, n: ls.length, S: Math.min(.225, 2*Math.PI*.335/ls.length*.86) }; });
   const cab = (m, k) => `<small>Refeição ${k+1} de ${ms.length}</small><h1>${m.nome}</h1>`;
@@ -206,7 +206,6 @@ function renderDieta(D){
   prato = palco.querySelector('.prato');
   palco.cena = palco.querySelector('.cena');
 
-  fatias.forEach((f, k) => { if (tops[k]) f.s.scrollTop = tops[k]; });
   pager.innerHTML = fatias.map((_, k) => `<button aria-label="Ir para ${k < ms.length ? ms[k].nome : 'resumo'}"></button>`).join('');
   [...pager.children].forEach((b, k) => b.onclick = () => car.scrollTo({left: fatias[k].s.offsetLeft, behavior: 'smooth'}));
   car.scrollLeft = x; quadro();
@@ -215,6 +214,9 @@ function renderDieta(D){
 /* uma transição diferente por refeição. t vai de 0 (no prato) a 1 (fora); lado = -1 saindo para a esquerda, +1 chegando pela direita */
 const cl = v => Math.max(0, Math.min(1, v));
 const ease = t => t * t * (3 - 2 * t);
+/* giro: todos rodam no mesmo sentido em volta do prato; quem sai termina antes da metade do arrasto
+   e quem chega só aparece depois dela, então nunca se sobrepõem */
+const GIRO = (t, a, R, lado) => { const p = a + lado * t * Math.PI * .9; return { x: R * (Math.cos(p) - Math.cos(a)), y: R * (Math.sin(p) - Math.sin(a)), s: 1 - t * .7, r: lado * t * 40, o: 1 - t }; };
 const EFEITOS = [
   /* café: cada ícone sai para o seu lado */
   (t, a, i, R, W) => { const s = Math.cos(a) > .05 ? 1 : Math.cos(a) < -.05 ? -1 : (i % 2 ? 1 : -1); return { x: s * t * W * .75, y: -t * 30, s: 1 - t * .6, r: s * t * 40, o: 1 - t }; },
@@ -241,9 +243,6 @@ function quadro(){
   [...pager.children].forEach((b, k) => b.classList.toggle('on', k === atual));
   fatias.atual = atual;
 
-  /* a camada acompanha a rolagem vertical da refeição mais próxima */
-  const ref = fatias[Math.min(atual, nMeals - 1)];
-  palco.style.transform = `translate3d(0,${ref.cab.getBoundingClientRect().top}px,0)`;
   const resumo = fatias[nMeals];
   const dr = cl((resumo.s.offsetLeft - x) / W);
   prato.style.opacity = dr;
@@ -261,25 +260,17 @@ function quadro(){
     c.centro.style.transform = `scale(${1 - ad * .25})`;
     c.mancha.style.transform = `rotate(${k * 37 + d * 150}deg) scale(${1 - ad * .1})`;
     c.mancha.style.opacity = cl(1 - ad);
-    const n = c.ics.length, ef = EFEITOS[k % EFEITOS.length];
+    const n = c.ics.length;
     c.ics.forEach((ic, i) => {
-      const ordem = lado < 0 ? i : n - 1 - i;
-      const t = ease(cl(ad * 1.7 - ordem / Math.max(1, n) * .7));
-      const v = ef(t, ic.a, i, R, W, lado);
+      const ordem = (lado < 0 ? i : n - 1 - i) / Math.max(1, n);
+      const t = ease(cl((ad * 2 - ordem * .35) / .65));
+      const v = GIRO(t, ic.a, R, lado);
       ic.b.style.transform = `translate3d(${v.x}px,${v.y}px,0) rotate(${v.r}deg) scale(${Math.max(.01, v.s)})`;
       ic.b.style.opacity = cl(v.o);
     });
   });
 }
-car.addEventListener('scroll', e => {
-  if (!raf) raf = requestAnimationFrame(quadro);
-  if (e.target === car) return;
-  /* rolagem vertical de uma refeição: as vizinhas acompanham para o prato não desalinhar */
-  const k = fatias.findIndex(f => f.s === e.target);
-  if (k < 0 || k !== fatias.atual) return;
-  const y = e.target.scrollTop;
-  [k - 1, k + 1].forEach(j => { if (fatias[j]) fatias[j].s.scrollTop = y; });
-}, { passive: true, capture: true });
+car.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(quadro); }, { passive: true });
 addEventListener('resize', quadro);
 D.init();
 </script>

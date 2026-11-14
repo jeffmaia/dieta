@@ -11,3 +11,4 @@ a v3 é o primeiro registro fiel.
 
 ## Linha do tempo
 - **v3-prato-transicoes** (2026-11-14 07:50): Prato parado com transição por refeição, 4 listas, mercado com marcação, 151 ícones próprios — [abrir](v3-prato-transicoes/index.html)
+- **v4-prato-giro** (2026-11-14 07:51): Rolagem sem tremor, transição em giro sem sobrepor, pílulas como padrão, mercado com motion, marcar tudo e 7/14 dias — [abrir](v4-prato-giro/index.html)

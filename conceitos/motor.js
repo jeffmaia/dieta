@@ -8,7 +8,7 @@ const KEY = 'dieta-estado-v1';
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
 S.subs = S.subs || {};
-S.dias = S.dias || 7;
+S.dias = [7, 14].includes(S.dias) ? S.dias : 7;
 S.ui = Object.assign({ troca: 'cheia', menu: 'some' }, S.ui);
 S.mk = S.mk || {};
 const EXTRA = window.OPCOES_EXTRA || [];
@@ -295,6 +295,17 @@ function listaMercado() {
   itens.sort((a, b) => a.nome.localeCompare(b.nome, 'pt'));
   return { itens, livres };
 }
+/* ao marcar, cada item desliza até o novo lugar em vez de pular */
+function animarMercado() {
+  const antes = new Map([...$('mercado').querySelectorAll('[data-mk]')].map(b => [b.dataset.mk, b.getBoundingClientRect().top]));
+  renderMercado();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  $('mercado').querySelectorAll('[data-mk]').forEach(b => {
+    const y0 = antes.get(b.dataset.mk); if (y0 == null) return;
+    const dy = y0 - b.getBoundingClientRect().top; if (Math.abs(dy) < 1) return;
+    b.parentNode.animate([{ transform: 'translateY(' + dy + 'px)' }, { transform: 'none' }], { duration: 360, easing: 'cubic-bezier(.32,.72,0,1)' });
+  });
+}
 function renderMercado() {
   const { itens, livres } = listaMercado();
   const ativos = itens.filter(i => !i.fora), todos = ativos.length + livres.length;
@@ -305,9 +316,9 @@ function renderMercado() {
     + (i.qtd ? '<i>' + i.qtd + '</i>' : '') + '</button></li>';
   const ord = a => a.slice().sort((x, y) => (!!S.mk[x.nome]) - (!!S.mk[y.nome]));
   $('mercado').innerHTML = '<header class="pg-head"><h1>Mercado</h1><p>Toque no que já pegou. A lista segue a dieta com as suas trocas.</p></header>'
-    + '<div class="seg" role="group" aria-label="Período">' + [1, 3, 7, 14].map(d =>
+    + '<div class="seg" role="group" aria-label="Período">' + [7, 14].map(d =>
       '<button data-dias="' + d + '" aria-pressed="' + (S.dias === d) + '">' + d + (d === 1 ? ' dia' : ' dias') + '</button>').join('') + '</div>'
-    + '<div class="mk-prog"><span><b>' + pegos + '</b> de ' + todos + ' no carrinho</span>' + (pegos ? '<button class="b-link" data-mk-limpar>Desmarcar tudo</button>' : '') + '</div>'
+    + '<div class="mk-prog"><span><b>' + pegos + '</b> de ' + todos + ' no carrinho</span>' + '<span class="mk-acoes">' + (pegos < todos ? '<button class="b-link" data-mk-todos>Marcar tudo</button>' : '') + (pegos ? '<button class="b-link" data-mk-limpar>Desmarcar tudo</button>' : '') + '</span></div>'
     + '<div class="mk-bar"><i style="width:' + (todos ? pegos / todos * 100 : 0) + '%"></i></div>'
     + '<ul class="mk">' + ord(ativos).map(li).join('') + '</ul>'
     + '<div class="sh-sub">À vontade e suplementos</div>'
@@ -330,7 +341,7 @@ function ligar() {
   document.addEventListener('click', e => {
     if (!e.target.closest('#opc,#tbOpc')) $('opc').classList.remove('on');
     if (!e.target.closest('#tabbar,#opc')) fecharMenu();
-    const t = e.target.closest('[data-swap],[data-view],[data-reset-item],[data-reset-meal],[data-reset-all],[data-dias],[data-shi],[data-opt],[data-frac],[data-ui],[data-mk],[data-mk-limpar],#shClose,#scrim,#shSave,#shReset,#mkEnviar,#shFim,#tbMenu,#tbOpc');
+    const t = e.target.closest('[data-swap],[data-view],[data-reset-item],[data-reset-meal],[data-reset-all],[data-dias],[data-shi],[data-opt],[data-frac],[data-ui],[data-mk],[data-mk-limpar],[data-mk-todos],#shClose,#scrim,#shSave,#shReset,#mkEnviar,#shFim,#tbMenu,#tbOpc');
     if (!t) return;
     const d = t.dataset;
     if (t.id === 'shClose' || t.id === 'scrim') fechar();
@@ -341,8 +352,9 @@ function ligar() {
     else if (t.id === 'tbMenu') t.setAttribute('aria-expanded', String($('tabbar').classList.toggle('aberta')));
     else if (t.id === 'tbOpc') $('opc').classList.toggle('on');
     else if (d.ui) { const [k, v] = d.ui.split(':'); S.ui[k] = v; save(); aplicarUI(); if (EXTRA.some(o => o.k === k)) refresh(); }
-    else if (d.mk) { if (S.mk[d.mk]) delete S.mk[d.mk]; else S.mk[d.mk] = 1; save(); renderMercado(); }
-    else if ('mkLimpar' in d) { S.mk = {}; save(); renderMercado(); }
+    else if (d.mk) { if (S.mk[d.mk]) delete S.mk[d.mk]; else S.mk[d.mk] = 1; save(); animarMercado(); }
+    else if ('mkLimpar' in d) { S.mk = {}; save(); animarMercado(); }
+    else if ('mkTodos' in d) { const { itens, livres } = listaMercado(); itens.filter(i => !i.fora).forEach(i => { S.mk[i.nome] = 1; }); livres.forEach(n => { S.mk[n] = 1; }); save(); animarMercado(); }
     else if (d.swap) abrir(d.swap);
     else if (d.view) { irPara(d.view); fecharMenu(); }
     else if (d.resetItem) { delete S.subs[d.resetItem]; save(); refresh(); toast('Item restaurado.'); }

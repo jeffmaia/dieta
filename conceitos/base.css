@@ -54,6 +54,8 @@ body[data-view="alteracoes"] #alteracoes,body[data-view="mercado"] #mercado{disp
 .mk.fora .mk-n b{text-decoration:line-through}
 .mk-prog{display:flex;align-items:center;justify-content:space-between;margin-top:18px;font-size:14px;color:var(--muted);min-height:44px}
 .mk-prog b{color:var(--fg);font-size:18px}
+.mk-acoes{display:flex;gap:14px}
+.mk li{position:relative;background:var(--bg)}
 .mk-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
 .mk-bar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
 
