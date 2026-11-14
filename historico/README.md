@@ -19,3 +19,4 @@ Para salvar uma nova versão: `historico/salvar.sh <versão> "descrição"`.
 - **v10-encolhe-pelo-topo** (2026-11-14 08:56): Prato encolhe pelo topo com a lista subindo junto; ícones encolhem menos (85/80/70% no menu) — [abrir](v10-encolhe-pelo-topo/index.html)
 - **v11-icones-na-borda** (2026-11-14 09:01): Ícones fixos em 80% ao rolar e saindo para a borda do prato, metade dentro e metade fora — [abrir](v11-icones-na-borda/index.html)
 - **v12-vazio-e-abertura** (2026-11-14 16:08): Alterações vazia com a troca de lugar animada (opção B; as 3 opções em vazio-trocas.html) e abertura do app em 750 ms — [abrir](v12-vazio-e-abertura/index.html)
+- **v13-volta-para-dieta** (2026-11-14 16:23): Corrige pratos sobrepostos ao voltar para a Dieta depois de restaurar; volta para a refeição em que estava — [abrir](v13-volta-para-dieta/index.html)

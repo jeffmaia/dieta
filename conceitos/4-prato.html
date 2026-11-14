@@ -254,17 +254,26 @@ const EFEITOS = [
   (t, a, i, R) => ({ x: Math.cos(a) * R * 1.4 * t, y: Math.sin(a) * R * 1.4 * t, s: 1 - t * .4, r: 0, o: 1 - t })
 ];
 
-let raf = 0;
+let raf = 0, ultima = 0;
+/* ao voltar para a Dieta, volta para a refeição em que a pessoa estava e reposiciona as camadas */
+new MutationObserver(() => {
+  if (document.body.dataset.view !== 'dieta' || !fatias.length) return;
+  const f = fatias[Math.min(ultima, fatias.length - 1)];
+  car.scrollLeft = f.s.offsetLeft;
+  quadro();
+}).observe(document.body, { attributes: true, attributeFilter: ['data-view'] });
 function quadro(){
   raf = 0;
-  if (!fatias.length) return;
+  /* com a Dieta escondida (outra aba aberta) o carrossel tem largura zero e todas as refeições
+     pareceriam estar na frente ao mesmo tempo: não mexe em nada e recalcula ao voltar */
+  if (!fatias.length || !car.clientWidth) return;
   const W = car.clientWidth || 1, x = car.scrollLeft, max = car.scrollWidth - car.clientWidth;
   let atual = 0, melhor = 1e9;
   fatias.forEach((f, k) => { const dd = Math.abs(f.s.offsetLeft - x); if (dd < melhor) { melhor = dd; atual = k; } });
   if (x >= max - 2) atual = fatias.length - 1;
   const fr = x / (car.clientWidth || 1), k0 = Math.abs(fr - Math.round(fr)) > .01 ? (fr > atual ? atual + 1 : atual - 1) : -1;
   [...pager.children].forEach((b, k) => b.classList.toggle('on', k === atual));
-  fatias.atual = atual;
+  fatias.atual = atual; ultima = atual;
   /* a página só é tão alta quanto a refeição atual: sem espaço vazio no fim da rolagem */
   const alt = Math.max(fatias[atual].s.offsetHeight, k0 >= 0 ? fatias[k0].s.offsetHeight : 0);
   if (car.style.height !== alt + 'px') car.style.height = alt + 'px';
