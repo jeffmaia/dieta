@@ -175,14 +175,14 @@ section.necess{padding:20px 0 56px}
     <div>
       <div class="eyebrow">Estudo de caso · app de dieta</div>
       <h1>Do incômodo<br>ao&nbsp;prato</h1>
-      <p class="lead">Um plano alimentar em HTML virou o app que eu consulto todo dia no celular. Doze versões, cada uma respondendo a um incômodo de uso.</p>
+      <p class="lead">Um plano alimentar em HTML virou o app que eu consulto todo dia no celular. Treze versões, cada uma respondendo a um incômodo de uso.</p>
       <div class="stats" aria-label="Números do projeto">
-        <div style="--c:var(--c0)"><b>12</b><span>versões</span></div>
+        <div style="--c:var(--c0)"><b>13</b><span>versões</span></div>
         <div style="--c:var(--c1)"><b>5</b><span>conceitos</span></div>
-        <div style="--c:var(--c2)"><b>30</b><span>telas</span></div>
+        <div style="--c:var(--c2)"><b>33</b><span>telas</span></div>
         <div style="--c:var(--c4)"><b>151</b><span>ícones</span></div>
       </div>
-      <div class="cta"><a class="btn grande" href="../conceitos/4-prato.html">Abrir o app <span aria-hidden="true">→</span></a><small>versão atual, a v11</small></div>
+      <div class="cta"><a class="btn grande" href="../conceitos/4-prato.html">Abrir o app <span aria-hidden="true">→</span></a><small>versão atual, a v12</small></div>
     </div>
     <div class="prato-hero" aria-hidden="true">
       <div class="mancha"></div><div class="pr"></div><div class="anel" id="anel"></div>
@@ -296,16 +296,22 @@ const FASES = [
    resumo:'Sete versões só de movimento: os ícones giram como um anel, o prato encolhe ao rolar e, fora do celular, o app abre numa moldura de iPhone.',
    citacao:'Estão sobrepondo um ícone ao outro. A gente tem que começar a animar tudo junto para que eles não se sobreponham.',
    porques:[['Anel rígido · v5','Cada ícone começava num momento e batia nos parados. Agora o anel inteiro gira junto.'],['Moldura · v6–v7','No computador, o app abre num iPhone com QR para o celular; dá para arrastar com o mouse.'],['Prato encolhe · v8–v11','Ao rolar, o prato cede espaço à lista, encolhe pelo topo e os ícones vão para a borda.']],
-   telas:[['v5_prato','Anel rígido','v5 · café da manhã',H+'v5-anel-rigido/4-prato.html',[]],['v5_almoco','Giro','v5 · próxima refeição',H+'v5-anel-rigido/4-prato.html',['proxima']],['v6_moldura','Moldura de iPhone','v6 · fora do celular',null,[],'larga'],['v8_rolar300','Encolhe ao rolar','v8 · até 50%',H+'v8-encolhe-ao-rolar/4-prato.html',['rolar:300']],['v9_rolar300','Prato preso','v9 · encolhe parado',H+'v9-prato-preso-encolhe/4-prato.html',['rolar:300']],['v10_rolar300','Encolhe pelo topo','v10 · lista sobe junto',H+'v10-encolhe-pelo-topo/4-prato.html',['rolar:300']],['v11_rolar180','Ícones na borda','v11 · versão atual',H+'v11-icones-na-borda/4-prato.html',['rolar:180']],['v5_troca','Troca','tela cheia',H+'v11-icones-na-borda/4-prato.html',['troca']],['v5_alteracoes','Alterações','original guardada',H+'v11-icones-na-borda/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v5_mercado','Mercado','7 ou 14 dias',H+'v11-icones-na-borda/4-prato.html',['view:mercado']]] },
+   telas:[['v5_prato','Anel rígido','v5 · café da manhã',H+'v5-anel-rigido/4-prato.html',[]],['v5_almoco','Giro','v5 · próxima refeição',H+'v5-anel-rigido/4-prato.html',['proxima']],['v6_moldura','Moldura de iPhone','v6 · fora do celular',null,[],'larga'],['v8_rolar300','Encolhe ao rolar','v8 · até 50%',H+'v8-encolhe-ao-rolar/4-prato.html',['rolar:300']],['v9_rolar300','Prato preso','v9 · encolhe parado',H+'v9-prato-preso-encolhe/4-prato.html',['rolar:300']],['v10_rolar300','Encolhe pelo topo','v10 · lista sobe junto',H+'v10-encolhe-pelo-topo/4-prato.html',['rolar:300']],['v11_rolar180','Ícones na borda','v11 · ícones na borda',H+'v11-icones-na-borda/4-prato.html',['rolar:180']],['v5_troca','Troca','tela cheia',H+'v11-icones-na-borda/4-prato.html',['troca']],['v5_alteracoes','Alterações','original guardada',H+'v11-icones-na-borda/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v5_mercado','Mercado','7 ou 14 dias',H+'v11-icones-na-borda/4-prato.html',['view:mercado']]] },
+ { id:'v12', n:'v12', nome:'Estado vazio', cor:0,
+   titulo:'Quando ainda não há troca, mostrar o que é trocar',
+   resumo:'Alterações vazia era só um texto cinza. Agora uma animação em loop mostra o alimento do prato e uma opção do mesmo grupo trocando de lugar, com um botão de volta para a dieta.',
+   citacao:'Uma ilustração que mostrasse substituição de uma comida para outra. Poderia ser até um motion, uma breve animaçãozinha.',
+   porques:[['Vazio que ensina','Quem ainda não trocou nada vê o que a troca faz, em vez de uma mensagem sem saída.'],['Três caminhos','Prato que troca, Troca de lugar e De → para, vistos lado a lado no celular.'],['Troca de lugar','Ficou a B: os ícones reais giram pelas setas do selo de troca, arroz → batata doce → mandioca.']],
+   telas:[['v12_vazio','Alterações vazia','v12 · em loop',H+'v12-vazio-e-abertura/4-prato.html',['pular','view:alteracoes']],['v12_vazio_b','Troca de lugar','v12 · no meio do giro',H+'v12-vazio-e-abertura/4-prato.html',['pular','view:alteracoes']],['v12_opcoes','As três opções','A, B e C lado a lado',null,[],'larga']] },
 ];
 const TELAS = {}; FASES.forEach(f => f.telas.forEach(t => TELAS[t[0]] = { f, t }));
 
 const COMP = [
-  ['Dieta',      ['v0_topo','v1_4-prato','v2_menu_botao','v3_prato','v4_prato','v5_prato']],
-  ['Ao rolar',   ['v0_lista',null,null,'v3_lista_pilulas','v4_lista','v11_rolar180']],
-  ['Troca',      ['v0_troca','v1_troca','v2_troca_4-prato','v3_troca',null,'v5_troca']],
-  ['Mercado',    [null,'v1_mercado',null,'v3_mercado','v4_mercado','v5_mercado']],
-  ['Alterações', [null,'v1_alteracoes',null,null,null,'v5_alteracoes']],
+  ['Dieta',      ['v0_topo','v1_4-prato','v2_menu_botao','v3_prato','v4_prato','v5_prato',null]],
+  ['Ao rolar',   ['v0_lista',null,null,'v3_lista_pilulas','v4_lista','v11_rolar180',null]],
+  ['Troca',      ['v0_troca','v1_troca','v2_troca_4-prato','v3_troca',null,'v5_troca',null]],
+  ['Mercado',    [null,'v1_mercado',null,'v3_mercado','v4_mercado','v5_mercado',null]],
+  ['Alterações', [null,'v1_alteracoes',null,null,null,'v5_alteracoes','v12_vazio']],
 ];
 
 const PERGUNTAS = [
@@ -326,7 +332,9 @@ async function executar(acts){
   const c = s => { const e = d.querySelector(s); if(e) e.click(); };
   for(const a of acts){
     const [k, ...r] = a.split(':');
-    if(k==='troca') c('[data-swap]');
+    if(k==='pular') { /* abertura do app fica fora da linha do tempo por enquanto: termina as animações finitas na hora */
+      d.getAnimations().forEach(a=>{ try{ if(a.effect && a.effect.getComputedTiming().endTime !== Infinity) a.finish(); }catch(e){} }); continue; }
+    else if(k==='troca') c('[data-swap]');
     else if(k==='opcao') c('[data-opt]');
     else if(k==='salvar') { c('#shSave'); await espera(500); }
     else if(k==='view') c(`[data-view="${r[0]}"]`);
@@ -426,8 +434,8 @@ function irFase(id, rolar, tela){
 let ordem = [], atual = 0;
 function renderComp(){
   const cab = `<tr><th class="lin"></th>${FASES.map(f=>`<th>${esc(f.n)}<small>${esc(f.nome)}</small></th>`).join('')}</tr>`;
-  const linhas = COMP.map(([nome, ids], r) => { let p = 0; return `<tr><th class="lin">${esc(nome)}</th>${ids.map(id=>{
-    if(!id) return `<td><div class="vazio">não existia</div></td>`;
+  const linhas = COMP.map(([nome, ids], r) => { let p = 0; return `<tr><th class="lin">${esc(nome)}</th>${ids.map((id, c)=>{
+    if(!id) return `<td><div class="vazio">${ids.slice(0,c).some(Boolean) ? 'sem mudança' : 'não existia'}</div></td>`;
     return `<td><button data-r="${r}" data-p="${p++}" aria-label="Ampliar ${esc(nome)} ${esc(TELAS[id].f.n)}"><div class="th"><img src="telas/${id}.jpg" alt="" loading="lazy"></div></button></td>`;
   }).join('')}</tr>`; }).join('');
   $('#comp').innerHTML = `<table>${cab}${linhas}</table>`;
