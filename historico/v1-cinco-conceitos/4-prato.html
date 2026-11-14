@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conceito 4 · Prato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+:root{
+  --bg:#FFF6EA;--fg:#3A2618;--muted:#9A8472;--line:#F0DFCB;--surface:#FFFBF5;
+  --accent:#E8452C;--accent-fg:#FFF6EA;--radius:22px;--sheet-r:36px;
+  --bar:#3A2618;--bar-fg:#E8D5C0;--bar-on:#FFD166;--bar-on-fg:#3A2618;
+  --font:"Fredoka",system-ui,sans-serif;--display:"Fredoka",system-ui,sans-serif;--display-w:600;
+}
+#dieta{max-width:560px;margin:0 auto;padding:calc(30px + env(safe-area-inset-top)) 20px calc(130px + env(safe-area-inset-bottom));overflow-x:hidden}
+.topo{font-size:38px;font-weight:700;letter-spacing:-.01em;line-height:1;margin:0 0 8px}
+.topo-s{color:var(--muted);margin:0 0 10px;font-size:15px}
+.ref{margin-top:44px;text-align:center}
+.cena{position:relative;width:290px;height:290px;margin:0 auto}
+.cena::before{content:"";position:absolute;inset:-6px -22px;background:var(--cor);border-radius:58% 42% 55% 45%/48% 56% 44% 52%;transform:rotate(var(--giro))}
+.prato{position:absolute;inset:26px;border-radius:50%;background:#fff;box-shadow:0 14px 30px rgba(58,38,24,.16),inset 0 0 0 14px #fff,inset 0 0 0 16px var(--line);
+  display:grid;place-items:center}
+.prato div{max-width:120px}
+.prato h2{font-size:22px;font-weight:600;line-height:1.05;margin:0}
+.prato small{font-size:12.5px;color:var(--muted)}
+.bolha{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px;border-radius:50%;background:#fff;font-size:30px;
+  display:grid;place-items:center;text-align:center;box-shadow:0 6px 14px rgba(58,38,24,.18);
+  transform:rotate(var(--a)) translate(112px) rotate(calc(-1*var(--a)))}
+.bolha.fixo{background:rgba(255,255,255,.55);box-shadow:none}
+.bolha.alt{box-shadow:0 0 0 3.5px var(--accent),0 6px 14px rgba(58,38,24,.18)}
+.leg{list-style:none;margin:22px auto 0;padding:0;max-width:400px;text-align:left}
+.leg li>*{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:7px 0}
+.leg .e{font-size:22px;width:28px;text-align:center}
+.leg .n{flex:1;font-size:16.5px;font-weight:500;line-height:1.2}
+.leg .n small{display:block;font-size:12.5px;color:var(--muted);font-weight:400}
+.leg b{font-weight:600;font-size:15px;text-align:right;max-width:40%}
+.leg .t{width:36px;height:36px;border-radius:50%;background:var(--cor);display:grid;place-items:center;flex:0 0 auto}
+.leg .t svg{width:16px;height:16px}
+.leg .sem{width:36px;flex:0 0 auto}
+.leg .fixo{color:var(--muted)}
+.leg .alt .n,.leg .alt b{color:var(--accent)}
+.ref-f{font-size:13px;color:var(--muted);margin-top:8px}
+.tot{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:56px}
+.tot div{width:132px;height:132px;border-radius:50%;display:grid;place-content:center;text-align:center;background:var(--cor)}
+.tot b{font-size:30px;font-weight:700;line-height:1}
+.tot span{font-size:12.5px}
+</style>
+</head>
+<body>
+<main id="dieta"></main>
+<script src="dados.js"></script>
+<script src="motor.js"></script>
+<script>
+const CORES = ['#FFD166','#FFB4A2','#B8E0D2','#CDB4DB','#A2D2FF','#FFC8DD'];
+function renderDieta(D){
+  document.getElementById('dieta').innerHTML = `<h1 class="topo">O que tem no prato</h1><p class="topo-s">Toque em um alimento para trocar.</p>` + D.meals().map((m,k) => {
+    const ls = m.itens.flatMap(it => it.linhas.map(l => ({it, l})));
+    return `<section class="ref" style="--cor:${CORES[k]};--giro:${k*37}deg">
+      <div class="cena">
+        <div class="prato"><div><h2>${m.nome}</h2><small>${m.hora} · ${m.kcal} kcal</small></div></div>
+        ${ls.map((x,j) => {
+          const st = `style="--a:${Math.round(j/ls.length*360-90)}deg"`, cls = `bolha ${x.it.fixo?'fixo':''} ${x.l.orig?'':'alt'}`;
+          return x.it.trocavel ? `<button class="${cls}" ${st} data-swap="${x.it.id}" aria-label="Trocar ${D.esc(x.l.nome)}">${x.l.emoji}</button>` : `<span class="${cls}" ${st} aria-hidden="true">${x.l.emoji}</span>`;
+        }).join('')}
+      </div>
+      <ul class="leg">${ls.map(x => {
+        const inner = `<span class="e">${x.l.emoji}</span><span class="n">${D.esc(x.l.nome)}${x.l.medida?`<small>${x.l.medida}</small>`:x.l.alt?`<small>${D.esc(x.l.alt)}</small>`:''}</span><b>${x.l.txt}</b>${x.it.trocavel?`<span class="t">${D.ico.swap}</span>`:'<span class="sem"></span>'}`;
+        const cls = `${x.it.fixo?'fixo':''} ${x.l.orig?'':'alt'}`;
+        return `<li>${x.it.trocavel ? `<button class="${cls}" data-swap="${x.it.id}">${inner}</button>` : `<div class="${cls}">${inner}</div>`}</li>`;
+      }).join('')}</ul>
+      <div class="ref-f">${m.carb} g carb · ≈${m.prot} g prot ${m.alterada?`· <button class="b-link" data-reset-meal="${m.i}">Restaurar refeição</button>`:''}</div>
+    </section>`;
+  }).join('') + `<div class="tot">${D.indicadores().map((i,k) => `<div style="--cor:${CORES[k]}"><b>${i.v}</b><span>${i.u} ${i.l}</span></div>`).join('')}</div>`;
+}
+D.init();
+</script>
+</body>
+</html>

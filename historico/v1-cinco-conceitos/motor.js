@@ -1,0 +1,301 @@
+/* Motor compartilhado pelos 5 conceitos: estado, cálculo de trocas, folha de troca,
+   página de alterações e lista de mercado. Cada conceito só desenha a tela "Dieta". */
+(function () {
+'use strict';
+const P = DATA.plano, G = DATA.grupos, R = P.refeicoes;
+const KEY = 'dieta-estado-v1';
+
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
+S.subs = S.subs || {};
+S.dias = S.dias || 7;
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+/* proteína estimada por porção de cada grupo (g). Estimativa, não vem da nutricionista. */
+const PROT = { 'Pão': 2, 'Carne ou ovo': 26, 'Arroz': 1.5, 'Feijão': 3, 'Leite': 5, 'Fruta': 0.8, 'Castanha': 1.3, 'Açúcar': 0, 'Gordura': 0, 'Vegetal refogado': 1 };
+const SCOOP = 20;
+
+/* ---------- formatação ---------- */
+const nf = n => {
+  const r = Math.round(n * 10) / 10;
+  return (Number.isInteger(r) ? String(r) : r.toFixed(1)).replace('.', ',');
+};
+const fg = g => (g < 10 ? nf(g) : String(Math.round(g)));
+const medida = (o, p) => {
+  const q = Math.round(o.qtd * p * 10) / 10;
+  return nf(q) + ' ' + (q > 1 ? o.medidaPlur : o.medidaSing);
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------- iconografia ---------- */
+const EM = [
+  [/feij|lentilha|grão de bico|ervilha|tutu/i, '🫘'], [/omelete/i, '🍳'], [/ovo/i, '🥚'],
+  [/pão/i, '🍞'], [/tomate/i, '🍅'], [/salada de fruta|mix de fruta/i, '🍓'], [/salada/i, '🥗'],
+  [/mussarela|queijo|brie|camembert|cottage|gorgonzola|minas|parmes|^prato|provolone|ricota|cream cheese|requeij/i, '🧀'],
+  [/tofu/i, '🧊'], [/coco/i, '🥥'], [/iogurte|coalhada|leite/i, '🥛'], [/arroz/i, '🍚'], [/uva/i, '🍇'],
+  [/cuscuz|milho|pipoca/i, '🌽'], [/tapioca|farinha|farelo|germe|farofa|aveia|granola|quinua/i, '🥣'],
+  [/mamão|manga/i, '🥭'], [/banana/i, '🍌'], [/^mel$/i, '🍯'], [/melão/i, '🍈'], [/melancia/i, '🍉'],
+  [/batata doce|inhame|cará|mandioca|baroa/i, '🍠'], [/batata/i, '🥔'], [/macarrão/i, '🍝'],
+  [/maçã/i, '🍎'], [/laranja|tangerina/i, '🍊'], [/morango|framboesa|cereja|acerola|pitanga|jabuticaba/i, '🍒'],
+  [/abacaxi/i, '🍍'], [/abacate/i, '🥑'], [/kiwi/i, '🥝'], [/pera/i, '🍐'],
+  [/pêssego|nectarina|damasco|caqui|ameixa/i, '🍑'], [/chocolate|bis|beijinho|paçoca|bananada/i, '🍫'],
+  [/chia|linhaça|gergelim|semente/i, '🌱'], [/creatina/i, '⚡'], [/protein/i, '🥤'], [/biscoito/i, '🍘'],
+  [/azeitona|azeite|óleo/i, '🫒'], [/manteiga/i, '🧈'], [/geleia|açúcar/i, '🍯']
+];
+const EMG = { 'Pão': '🍞', 'Arroz': '🍚', 'Feijão': '🫘', 'Leite': '🥛', 'Fruta': '🍎', 'Castanha': '🥜', 'Açúcar': '🍬', 'Gordura': '🫒', 'Carne ou ovo': '🥚', 'Vegetal refogado': '🥦' };
+const emoji = (nome, grupo) => { const m = EM.find(e => e[0].test(nome)); return m ? m[1] : (EMG[grupo] || '🍽️'); };
+
+/* ---------- modelo ---------- */
+const opt = (grupo, nome) => G[grupo].opcoes.find(o => o.nome === nome);
+const gTotal = it => { const m = it.qtd.match(/(\d+(?:[.,]\d+)?)\s*g\b/); return m ? parseFloat(m[1].replace(',', '.')) : null; };
+const opcoes = it => G[it.grupo].opcoes.filter(o => o.veg !== false && !(it.match || []).includes(o.nome));
+const trocavel = it => !!it.grupo && it.grupo !== 'Carne ou ovo' && gTotal(it) != null && opcoes(it).length > 0;
+
+function linhas(ri, ii) {
+  const it = R[ri].itens[ii], ps = S.subs[ri + '-' + ii];
+  const e = emoji(it.nome, it.grupo);
+  if (!ps) return [{ nome: it.nome, txt: it.qtd, emoji: e, orig: true, alt: it.alt }];
+  return ps.map(p => {
+    if (!p.n) return { nome: it.nome, txt: fg(gTotal(it) * p.p / it.porcoes) + ' g', emoji: e, orig: true };
+    const o = opt(it.grupo, p.n);
+    return { nome: o.nome, txt: fg(o.g * p.p) + ' g', medida: medida(o, p.p), emoji: emoji(o.nome, it.grupo), orig: false };
+  });
+}
+const protRef = r => Math.round(r.itens.reduce((s, it) =>
+  s + (it.grupo ? (PROT[it.grupo] || 0) * it.porcoes : /protein/i.test(it.nome) ? SCOOP : 0), 0));
+
+function meals() {
+  return R.map((r, ri) => {
+    const itens = r.itens.map((it, ii) => ({
+      id: ri + '-' + ii, nome: it.nome, grupo: it.grupo, fixo: !!(it.livre || it.suplemento),
+      livre: !!it.livre, sup: !!it.suplemento, trocavel: trocavel(it),
+      alterado: !!S.subs[ri + '-' + ii], linhas: linhas(ri, ii)
+    }));
+    return { i: ri, nome: r.nome, hora: r.hora, kcal: r.kcal, carb: r.carb, prot: protRef(r), itens, alterada: itens.some(x => x.alterado) };
+  });
+}
+const indicadores = () => [
+  { v: String(P.kcalTotal), u: 'kcal', l: 'calorias' },
+  { v: String(R.reduce((s, r) => s + r.carb, 0)), u: 'g', l: 'carboidrato' },
+  { v: '≈' + R.reduce((s, r) => s + protRef(r), 0), u: 'g', l: 'proteína' },
+  { v: String(R.length), u: '', l: 'refeições' }
+];
+const nAlt = () => Object.keys(S.subs).length;
+
+/* ---------- ícones de interface ---------- */
+const ico = {
+  swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3l4 4-4 4"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h12a4 4 0 0 0 4-4"/></svg>',
+  dieta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>',
+  alt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11"/><path d="M4 12h16"/><path d="M4 17h8"/><circle cx="18" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>',
+  mercado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>',
+  grade: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+};
+
+/* ---------- estrutura comum ---------- */
+function montar() {
+  document.body.dataset.view = 'dieta';
+  document.body.insertAdjacentHTML('beforeend',
+    '<main class="page" id="alteracoes"></main><main class="page" id="mercado"></main>'
+    + '<nav class="tabbar" aria-label="Seções">'
+    + '<button data-view="dieta" aria-current="true">' + ico.dieta + '<span class="lbl">Dieta</span></button>'
+    + '<button data-view="alteracoes">' + ico.alt + '<span class="lbl">Alterações</span><span class="tb-n" id="tbN" hidden></span></button>'
+    + '<button data-view="mercado">' + ico.mercado + '<span class="lbl">Mercado</span></button>'
+    + '<a href="index.html" aria-label="Voltar aos conceitos">' + ico.grade + '</a>'
+    + '</nav>'
+    + '<div class="scrim" id="scrim"></div>'
+    + '<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">'
+    + '<div class="sh-grab"></div>'
+    + '<div class="sh-head"><div><small id="shMeal"></small><h3 id="shT">Trocar</h3></div><button class="sh-close" id="shClose" aria-label="Fechar">✕</button></div>'
+    + '<div class="sh-items" id="shItems"></div>'
+    + '<div class="sh-qtd"><input id="shG" aria-label="Gramas a trocar" type="number" inputmode="decimal" min="0" step="any"><span id="shDe"></span>'
+    + '<button data-frac="1">Tudo</button><button data-frac="0.5">Metade</button></div>'
+    + '<input class="sh-search" id="shQ" type="search" placeholder="Buscar alimento" autocomplete="off" aria-label="Buscar alimento">'
+    + '<div class="sh-body" id="shBody"></div>'
+    + '<div class="sh-foot"><button class="b-ghost" id="shReset" hidden>Voltar ao original</button><button class="b-primary" id="shSave" disabled>Escolha uma troca</button></div>'
+    + '</section><div class="toast" id="toast" role="status"></div>');
+}
+
+function refresh() {
+  if (window.renderDieta) window.renderDieta(D);
+  renderAlt(); renderMercado();
+  const n = nAlt(), b = document.getElementById('tbN');
+  b.hidden = !n; b.textContent = n;
+}
+function irPara(v) {
+  document.body.dataset.view = v;
+  document.querySelectorAll('.tabbar [data-view]').forEach(b => b.setAttribute('aria-current', String(b.dataset.view === v)));
+  window.scrollTo(0, 0);
+}
+let tT;
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+/* ---------- folha de troca (vários itens da refeição, total ou parcial) ---------- */
+let cur = null;
+const $ = id => document.getElementById(id);
+
+function abrir(id) {
+  const [ri, ii] = id.split('-').map(Number);
+  cur = { r: ri, i: ii, g: {}, sel: {} };
+  R[ri].itens.forEach((it, k) => { if (trocavel(it)) cur.g[k] = gTotal(it); });
+  $('shMeal').textContent = R[ri].nome;
+  $('shQ').value = '';
+  shTudo();
+  $('scrim').classList.add('on'); $('sheet').classList.add('on');
+  document.body.classList.add('travado');
+}
+function fechar() {
+  $('scrim').classList.remove('on'); $('sheet').classList.remove('on');
+  document.body.classList.remove('travado'); cur = null;
+}
+function shTudo() {
+  const r = R[cur.r], it = r.itens[cur.i];
+  $('shItems').innerHTML = r.itens.map((x, k) => trocavel(x)
+    ? '<button data-shi="' + k + '" aria-pressed="' + (k === cur.i) + '">' + emoji(x.nome, x.grupo) + ' ' + esc(x.nome)
+      + (cur.sel[k] ? '<span class="ok">' + ico.check + '</span>' : '') + '</button>' : '').join('');
+  $('shT').textContent = 'Trocar ' + it.nome.toLowerCase();
+  $('shG').value = cur.g[cur.i];
+  $('shG').max = gTotal(it);
+  $('shDe').textContent = 'g de ' + fg(gTotal(it)) + ' g';
+  $('shReset').hidden = !S.subs[cur.r + '-' + cur.i];
+  shLista(); shPe();
+}
+function shLista() {
+  const it = R[cur.r].itens[cur.i], tot = gTotal(it);
+  const frac = Math.min(1, Math.max(0, (cur.g[cur.i] || 0) / tot)), p = it.porcoes * frac;
+  const termo = $('shQ').value.trim().toLowerCase();
+  const ops = opcoes(it).filter(o => !termo || o.nome.toLowerCase().includes(termo));
+  if (!frac) { $('shBody').innerHTML = '<p class="sh-vazio">Digite quantos gramas você quer trocar.</p>'; return; }
+  if (!ops.length) { $('shBody').innerHTML = '<p class="sh-vazio">Nada com esse nome no grupo ' + esc(it.grupo) + '.</p>'; return; }
+  const subs = [...new Set(ops.map(o => o.sub))];
+  $('shBody').innerHTML = (frac < 1 ? '<p class="sh-resto">Você mantém ' + fg(tot - cur.g[cur.i]) + ' g de ' + esc(it.nome.toLowerCase()) + ' e troca o restante por:</p>' : '')
+    + subs.map(s => '<div class="sh-sub">' + esc(s) + '</div>' + ops.filter(o => o.sub === s).map(o =>
+      '<button class="sh-opt" data-opt="' + esc(o.nome) + '" aria-pressed="' + (cur.sel[cur.i] === o.nome) + '">'
+      + '<span class="e">' + emoji(o.nome, it.grupo) + '</span>'
+      + '<span class="m"><b>' + esc(o.nome) + '</b><small>' + medida(o, p) + '</small>'
+      + (o.alerta ? '<em>' + esc(o.alerta) + '</em>' : '') + '</span>'
+      + '<span class="g">' + fg(o.g * p) + ' g</span><span class="ck">' + ico.check + '</span></button>').join('')).join('');
+}
+function shPe() {
+  const n = Object.keys(cur.sel).length, b = $('shSave');
+  b.disabled = !n;
+  b.textContent = !n ? 'Escolha uma troca' : n === 1 ? 'Salvar troca na dieta' : 'Salvar ' + n + ' trocas na dieta';
+}
+function salvar() {
+  Object.keys(cur.sel).forEach(k => {
+    const it = R[cur.r].itens[k], frac = Math.min(1, cur.g[k] / gTotal(it));
+    if (!frac) return;
+    S.subs[cur.r + '-' + k] = frac < 1
+      ? [{ n: null, p: it.porcoes * (1 - frac) }, { n: cur.sel[k], p: it.porcoes * frac }]
+      : [{ n: cur.sel[k], p: it.porcoes }];
+  });
+  save(); fechar(); refresh(); toast('Dieta atualizada. A original continua guardada.');
+}
+
+/* ---------- página de alterações ---------- */
+function renderAlt() {
+  const ms = meals().filter(m => m.alterada);
+  let h = '<header class="pg-head"><h1>Alterações</h1><p>' + (ms.length
+    ? nAlt() + (nAlt() === 1 ? ' item diferente' : ' itens diferentes') + ' da dieta original.'
+    : 'Sua dieta está igual à original.') + '</p></header>';
+  if (!ms.length) h += '<p class="pg-vazio">Quando você salvar uma troca, ela aparece aqui, e dá para desfazer por item, por refeição ou tudo de uma vez.</p>';
+  ms.forEach(m => {
+    h += '<section class="alt-meal"><div class="alt-mh"><h2>' + esc(m.nome) + '</h2><button class="b-link" data-reset-meal="' + m.i + '">Restaurar refeição</button></div>';
+    m.itens.filter(x => x.alterado).forEach(x => {
+      const o = R[m.i].itens[+x.id.split('-')[1]];
+      h += '<div class="alt-row"><div class="alt-main"><s>' + esc(o.nome) + ' · ' + esc(o.qtd) + '</s>'
+        + x.linhas.map(l => '<div class="alt-to"><span>' + l.emoji + '</span>' + esc(l.nome) + ' <b>' + l.txt + '</b>'
+          + (l.medida ? '<small>' + l.medida + '</small>' : '') + '</div>').join('')
+        + '</div><button class="b-link" data-reset-item="' + x.id + '">Desfazer</button></div>';
+    });
+    h += '</section>';
+  });
+  if (ms.length) h += '<button class="b-ghost wide" data-reset-all>Restaurar a dieta original inteira</button>';
+  $('alteracoes').innerHTML = h;
+}
+
+/* ---------- lista de mercado ---------- */
+function listaMercado() {
+  const tot = {}, livres = [];
+  R.forEach((r, ri) => r.itens.forEach((it, ii) => {
+    if (it.livre || it.suplemento) { if (!livres.includes(it.nome)) livres.push(it.nome); return; }
+    (S.subs[ri + '-' + ii] || [{ n: null, p: it.porcoes }]).forEach(p => {
+      let nome, g = 0, un = 0;
+      if (p.n) { const o = opt(it.grupo, p.n); nome = o.nome; g = o.g * p.p; }
+      else if (it.grupo === 'Carne ou ovo') { nome = 'Ovos'; un = 4 * p.p; }
+      else { nome = (it.match && it.match.length === 1) ? it.match[0] : it.nome; g = gTotal(it) * p.p / it.porcoes; }
+      const t = tot[nome] || (tot[nome] = { nome, g: 0, un: 0, grupo: it.grupo });
+      t.g += g; t.un += un;
+    });
+  }));
+  const itens = Object.values(tot).map(t => {
+    const g = t.g * S.dias, un = Math.ceil(t.un * S.dias);
+    return { nome: t.nome, emoji: emoji(t.nome, t.grupo), qtd: un ? un + ' unidades' : g >= 1000 ? nf(g / 1000) + ' kg' : Math.round(g) + ' g' };
+  }).sort((a, b) => a.nome.localeCompare(b.nome, 'pt'));
+  return { itens, livres };
+}
+function renderMercado() {
+  const { itens, livres } = listaMercado();
+  $('mercado').innerHTML = '<header class="pg-head"><h1>Mercado</h1><p>Calculada a partir da dieta como está agora, com as suas trocas.</p></header>'
+    + '<div class="seg" role="group" aria-label="Período">' + [1, 3, 7, 14].map(d =>
+      '<button data-dias="' + d + '" aria-pressed="' + (S.dias === d) + '">' + d + (d === 1 ? ' dia' : ' dias') + '</button>').join('') + '</div>'
+    + '<ul class="mk">' + itens.map(i => '<li><span>' + i.emoji + '</span><b>' + esc(i.nome) + '</b><i>' + i.qtd + '</i></li>').join('') + '</ul>'
+    + '<div class="sh-sub">À vontade e suplementos</div>'
+    + '<ul class="mk">' + livres.map(n => '<li><span>' + emoji(n) + '</span><b>' + esc(n) + '</b></li>').join('') + '</ul>'
+    + '<button class="b-primary wide" id="mkEnviar">Enviar para o Lembretes</button>'
+    + '<p class="pg-nota">Neste protótipo o botão copia a lista. Na fase 4 ele abre um Atalho do iOS que cria os itens na sua lista de compras do Lembretes.</p>';
+}
+function enviarMercado() {
+  const { itens, livres } = listaMercado();
+  const txt = itens.map(i => i.nome + ' — ' + i.qtd).concat(livres).join('\n');
+  const ok = () => toast('Lista copiada (' + (itens.length + livres.length) + ' itens).');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, () => toast('Não foi possível copiar aqui.'));
+  else toast('Não foi possível copiar aqui.');
+}
+
+/* ---------- eventos ---------- */
+function ligar() {
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-swap],[data-view],[data-reset-item],[data-reset-meal],[data-reset-all],[data-dias],[data-shi],[data-opt],[data-frac],#shClose,#scrim,#shSave,#shReset,#mkEnviar');
+    if (!t) return;
+    const d = t.dataset;
+    if (t.id === 'shClose' || t.id === 'scrim') fechar();
+    else if (t.id === 'shSave') salvar();
+    else if (t.id === 'mkEnviar') enviarMercado();
+    else if (t.id === 'shReset') { delete S.subs[cur.r + '-' + cur.i]; save(); fechar(); refresh(); toast('Item restaurado.'); }
+    else if (d.swap) abrir(d.swap);
+    else if (d.view) irPara(d.view);
+    else if (d.resetItem) { delete S.subs[d.resetItem]; save(); refresh(); toast('Item restaurado.'); }
+    else if (d.resetMeal != null && 'resetMeal' in d) {
+      Object.keys(S.subs).forEach(k => { if (k.split('-')[0] === d.resetMeal) delete S.subs[k]; });
+      save(); refresh(); toast('Refeição restaurada.');
+    }
+    else if ('resetAll' in d) { if (confirm('Restaurar a dieta original inteira?')) { S.subs = {}; save(); refresh(); toast('Dieta original restaurada.'); } }
+    else if (d.dias) { S.dias = +d.dias; save(); renderMercado(); }
+    else if (d.shi) { cur.i = +d.shi; $('shQ').value = ''; shTudo(); $('shBody').scrollTop = 0; }
+    else if (d.opt) {
+      if (cur.sel[cur.i] === d.opt) delete cur.sel[cur.i]; else cur.sel[cur.i] = d.opt;
+      shTudo();
+    }
+    else if (d.frac) { const it = R[cur.r].itens[cur.i]; cur.g[cur.i] = Math.round(gTotal(it) * +d.frac); $('shG').value = cur.g[cur.i]; shLista(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && cur) fechar();
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-swap]:not(button)')) { e.preventDefault(); abrir(e.target.dataset.swap); }
+  });
+  $('shG').addEventListener('input', () => {
+    const it = R[cur.r].itens[cur.i], v = parseFloat($('shG').value.replace(',', '.'));
+    cur.g[cur.i] = isNaN(v) ? 0 : Math.min(gTotal(it), Math.max(0, v));
+    shLista();
+  });
+  $('shQ').addEventListener('input', shLista);
+}
+
+const D = window.D = {
+  meals, indicadores, ico, esc, nAlt,
+  init() { montar(); ligar(); refresh(); }
+};
+})();

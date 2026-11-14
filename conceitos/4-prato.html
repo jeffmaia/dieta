@@ -216,7 +216,7 @@ const cl = v => Math.max(0, Math.min(1, v));
 const ease = t => t * t * (3 - 2 * t);
 /* giro: todos rodam no mesmo sentido em volta do prato; quem sai termina antes da metade do arrasto
    e quem chega só aparece depois dela, então nunca se sobrepõem */
-const GIRO = (t, a, R, lado) => { const p = a + lado * t * Math.PI * .9; return { x: R * (Math.cos(p) - Math.cos(a)), y: R * (Math.sin(p) - Math.sin(a)), s: 1 - t * .7, r: lado * t * 40, o: 1 - t }; };
+const GIRO = (t, a, R, lado) => { const p = a + lado * t * Math.PI * .6; return { x: R * (Math.cos(p) - Math.cos(a)), y: R * (Math.sin(p) - Math.sin(a)), s: 1 - t * .6, r: lado * t * 30, o: 1 - t * t }; };
 const EFEITOS = [
   /* café: cada ícone sai para o seu lado */
   (t, a, i, R, W) => { const s = Math.cos(a) > .05 ? 1 : Math.cos(a) < -.05 ? -1 : (i % 2 ? 1 : -1); return { x: s * t * W * .75, y: -t * 30, s: 1 - t * .6, r: s * t * 40, o: 1 - t }; },
@@ -262,8 +262,8 @@ function quadro(){
     c.mancha.style.opacity = cl(1 - ad);
     const n = c.ics.length;
     c.ics.forEach((ic, i) => {
-      const ordem = (lado < 0 ? i : n - 1 - i) / Math.max(1, n);
-      const t = ease(cl((ad * 2 - ordem * .35) / .65));
+      /* todos juntos, como um anel rígido: a distância entre eles nunca muda, então não se encostam */
+      const t = ease(cl(ad * 2));
       const v = GIRO(t, ic.a, R, lado);
       ic.b.style.transform = `translate3d(${v.x}px,${v.y}px,0) rotate(${v.r}deg) scale(${Math.max(.01, v.s)})`;
       ic.b.style.opacity = cl(v.o);
