@@ -339,14 +339,33 @@ async function executar(acts){
   }
 }
 
+/* scrollIntoView dentro do iframe também rola a página da linha do tempo; aqui ele só rola o próprio app */
+function prender(w){
+  const P = w.Element.prototype; if(P.__preso) return; P.__preso = true;
+  P.scrollIntoView = function(o){
+    const d = w.document, comp = el => el.scrollHeight > el.clientHeight + 1 && /auto|scroll/.test(w.getComputedStyle(el).overflowY);
+    let c = this.parentElement; while(c && c !== d.body && c !== d.documentElement && !comp(c)) c = c.parentElement;
+    const behavior = (o && typeof o === 'object' && o.behavior) || 'auto';
+    if(c && c !== d.body && c !== d.documentElement) c.scrollTo({top: this.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop, behavior});
+    else w.scrollTo({top: this.getBoundingClientRect().top + w.scrollY, behavior});
+  };
+}
+
 function abrirTela(id){
   const x = TELAS[id]; if(!x || !ifr) return;
   try{ localStorage.removeItem('dieta-estado-v1'); }catch(e){}
   ifr.onload = async () => {
-    try{ const st = ifr.contentDocument.createElement('style'); st.textContent = SEM_BARRA; ifr.contentDocument.head.appendChild(st); }catch(e){}
+    try{ prender(ifr.contentWindow); const st = ifr.contentDocument.createElement('style'); st.textContent = SEM_BARRA; ifr.contentDocument.head.appendChild(st); }catch(e){}
     await espera(500); executar(x.t[4]);
   };
-  ifr.src = x.t[3] + (x.t[3].includes('?')?'&':'?') + 't=' + Date.now();
+  const marca = 't=' + Date.now();
+  ifr.src = x.t[3] + (x.t[3].includes('?')?'&':'?') + marca;
+  /* prende a rolagem automática do app dentro do celular assim que o documento novo existir */
+  const alvo = ifr, ini = Date.now();
+  (function vigia(){
+    try{ const w = alvo.contentWindow; if(w && w.location.href.includes(marca)) prender(w); }catch(e){}
+    if(alvo === ifr && Date.now() - ini < 4000) setTimeout(vigia, 15);
+  })();
   document.querySelectorAll('.tela-b').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t===id)));
   const lg = $('#legenda'); if(lg) lg.innerHTML = `<b>${esc(x.t[1])}</b> · ${esc(x.t[2])}. Funciona de verdade: toque, arraste e troque.`;
 }
@@ -461,6 +480,7 @@ async function renderIcones(){
     $('#icGrid').innerHTML = todos.map(t=>`<div class="ic"><div class="ic-c" style="--c:${t.c}">${svg(t.n)}</div>${esc(t.n)}</div>`).join(''); });
 }
 
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 renderTrilho(); renderComp(); renderPerguntas(); renderIcones();
 const h = location.hash.slice(1);
 irFase(FASES.some(f=>f.id===h) || h==='lado' ? h : 'v0', false);
