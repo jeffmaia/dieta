@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dieta · do incômodo ao prato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF6EA;--fg:#3A2618;--muted:#8A7461;--line:#EBDAC5;--surface:#FFFBF5;--accent:#E8452C;
+  --c0:#FFD166;--c1:#FFB4A2;--c2:#B8E0D2;--c3:#CDB4DB;--c4:#A2D2FF;--c5:#FFC8DD;
+  --font:"IBM Plex Sans",system-ui,sans-serif;--display:"Fredoka",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body.travado{overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{display:block}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* capa */
+.capa{padding:64px 0 36px}
+.capa .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+.capa h1{font-size:clamp(40px,6vw,68px);margin:12px 0 18px}
+.capa .lead{font-size:18px;max-width:520px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.stats div{width:96px;height:96px;border-radius:50%;display:grid;place-content:center;text-align:center;background:var(--c)}
+.stats b{font-family:var(--display);font-size:28px;font-weight:600;line-height:1}
+.stats span{font-size:11.5px;font-weight:500;margin-top:3px}
+.prato-hero{position:relative;width:min(100%,360px);aspect-ratio:1;margin:0 auto}
+.prato-hero .mancha{position:absolute;inset:-6% -10%;background:var(--c0);border-radius:58% 42% 55% 45%/48% 56% 44% 52%;animation:gira 26s linear infinite}
+.prato-hero .pr{position:absolute;inset:0;border-radius:50%;background:#fff;box-shadow:0 16px 34px rgba(58,38,24,.18),inset 0 0 0 12px #fff,inset 0 0 0 14px var(--line)}
+.prato-hero .anel{position:absolute;inset:0;animation:gira 40s linear infinite}
+.prato-hero .bo{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px;border-radius:50%;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--c) 40%,#fff);transform:rotate(var(--a)) translateX(110px) rotate(calc(-1*var(--a)))}
+.prato-hero .bo svg{width:66px;height:66px;animation:gira 40s linear infinite reverse}
+.prato-hero .ct{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.prato-hero .ct b{font-family:var(--display);font-size:24px;font-weight:600;line-height:1}
+.prato-hero .ct span{font-size:12.5px;color:var(--muted);margin-top:4px}
+@keyframes gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.prato-hero *{animation:none!important}}
+
+/* trilho */
+.trilho-wrap{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.trilho{display:flex;gap:6px;overflow-x:auto;padding:12px 24px;max-width:1180px;margin:0 auto;scrollbar-width:none}
+.trilho::-webkit-scrollbar{display:none}
+.no{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:5px 15px 5px 5px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);transition:background .2s,border-color .2s}
+.no i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--c);font-family:var(--display);font-weight:600;font-size:14px}
+.no span{font-size:14px;font-weight:600;white-space:nowrap}
+.no[aria-selected="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.no.lado i{background:transparent;border:1.5px dashed var(--muted)}
+
+/* fase */
+.fase{padding:44px 0 20px;scroll-margin-top:66px}
+.fase-grid{display:grid;grid-template-columns:minmax(0,1fr) 326px;gap:56px;align-items:start}
+.fase-txt h2{font-size:clamp(30px,4vw,44px);margin:8px 0 12px}
+.fase-txt .res{font-size:18px;max-width:600px}
+.citacao{margin-top:20px;padding:14px 18px 14px 20px;border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 22%,transparent);border-radius:0 18px 18px 0;font-size:15.5px;max-width:620px}
+.citacao cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:6px}
+.porques{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.porques li{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--muted);line-height:1.4}
+.porques b{display:block;color:var(--fg);font-size:15px;font-weight:600;margin-bottom:4px;line-height:1.25}
+.telas-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 12px}
+.telas-h small{font-size:13px;color:var(--muted)}
+.telas{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:16px 12px}
+.tela-b{display:flex;flex-direction:column;gap:7px;text-align:left}
+.tela-b .th{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:600/1298;background:#fff;box-shadow:0 0 0 1px var(--line);transition:transform .2s,box-shadow .2s}
+.tela-b img{width:100%;height:100%;object-fit:cover}
+.tela-b:hover .th{transform:translateY(-2px)}
+.tela-b[aria-pressed="true"] .th{box-shadow:0 0 0 3px var(--fg)}
+.tela-b span{font-size:13px;font-weight:600;line-height:1.25}
+.tela-b span small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.nav-fase{display:flex;gap:8px;margin-top:28px}
+.btn{border-radius:999px;background:var(--fg);color:var(--bg);padding:9px 16px;font-size:13.5px;font-weight:600;white-space:nowrap}
+.btn.sec{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+
+/* celular */
+.lado-fone{position:sticky;top:86px}
+.fone{width:326px;margin:0 auto;border-radius:46px;padding:10px;background:var(--fg);box-shadow:0 24px 50px rgba(58,38,24,.28)}
+.tela{width:306px;height:640px;border-radius:36px;overflow:hidden;background:#fff;position:relative}
+.tela iframe{position:absolute;left:0;top:0;width:390px;height:816px;border:0;transform:scale(.7846);transform-origin:0 0;background:#fff}
+.legenda{font-size:12.5px;color:var(--muted);text-align:center;margin:12px auto 0;max-width:300px}
+.legenda b{color:var(--fg);font-weight:600}
+
+/* lado a lado */
+section.sec{padding:76px 0 10px}
+.sec-head{max-width:640px;margin-bottom:26px}
+.sec-head h2{font-size:clamp(30px,4vw,44px);margin:8px 0 10px}
+.sec-head p{color:var(--muted);font-size:16.5px}
+.comp{overflow-x:auto;scrollbar-width:thin;padding-bottom:8px}
+.comp table{border-collapse:separate;border-spacing:12px 0;margin-left:-12px}
+.comp th{font-family:var(--display);font-weight:600;font-size:16px;text-align:left;padding:0 0 10px;white-space:nowrap}
+.comp th small{display:block;font-family:var(--font);font-size:11.5px;font-weight:500;color:var(--muted)}
+.comp th.lin{font-size:13px;font-family:var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);vertical-align:middle;padding-right:4px;width:84px}
+.comp td{padding:0 0 18px;vertical-align:top}
+.comp td .th{width:150px;border-radius:18px;overflow:hidden;aspect-ratio:600/1298;box-shadow:0 0 0 1px var(--line);background:#fff}
+.comp td img{width:100%;height:100%;object-fit:cover}
+.comp td button{display:block;transition:transform .2s}
+.comp td button:hover{transform:translateY(-2px)}
+.vazio{width:150px;aspect-ratio:600/1298;border-radius:18px;border:1.5px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-size:12.5px;text-align:center;padding:12px}
+
+/* perguntas */
+.perguntas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pergunta{display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:26px;background:color-mix(in srgb,var(--c) 28%,#fff)}
+.pergunta q{quotes:none;font-family:var(--display);font-size:20px;font-weight:600;line-height:1.15;text-wrap:balance}
+.pergunta .f{margin-top:auto;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.pergunta .f::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--fg)}
+
+/* ícones */
+details.ics{margin-top:4px}
+details.ics summary{cursor:pointer;list-style:none;display:inline-flex}
+details.ics summary::-webkit-details-marker{display:none}
+.amostra{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.ic-c{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 38%,#fff)}
+.ic-c svg{width:50px;height:50px}
+.ic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:14px 10px;margin-top:20px}
+.ic{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:11.5px;line-height:1.2;color:var(--muted)}
+.ic .ic-c{width:76px;height:76px}.ic svg{width:58px;height:58px}
+
+footer{padding:64px 0 72px;color:var(--muted);font-size:14px}
+footer .wrap{border-top:1px solid var(--line);padding-top:22px}
+
+/* ampliar */
+.lb{position:fixed;inset:0;z-index:50;background:rgba(32,20,12,.82);display:none;align-items:center;justify-content:center;gap:20px;padding:24px}
+.lb.on{display:flex}
+.lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.lb img{height:min(84vh,1298px);width:auto;max-width:86vw;border-radius:28px;background:#fff;object-fit:contain}
+.lb figcaption{color:#fff;font-size:14px;text-align:center}
+.lb figcaption b{font-family:var(--display);font-size:18px;font-weight:600;display:block}
+.lb .seta{width:48px;height:48px;border-radius:50%;background:rgba(255,246,234,.14);color:#fff;font-size:22px;flex:0 0 auto}
+.lb .fechar{position:absolute;top:18px;right:18px;width:44px;height:44px;border-radius:50%;background:rgba(255,246,234,.14);color:#fff;font-size:22px}
+.lb .acoes{display:flex;gap:8px}
+.lb .btn{background:var(--bg);color:var(--fg)}
+
+@media (max-width:980px){
+  .capa .wrap{grid-template-columns:1fr}
+  .prato-hero{width:min(100%,300px)}
+  .fase-grid{grid-template-columns:1fr;gap:32px}
+  .lado-fone{position:static;order:-1}
+  .porques{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}.trilho{padding:10px 16px}
+  .fone{width:300px}.tela{width:280px;height:600px}.tela iframe{transform:scale(.7179)}
+  .lb .seta{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="capa">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Estudo de caso · app de dieta</div>
+      <h1>Do incômodo<br>ao&nbsp;prato</h1>
+      <p class="lead">Um plano alimentar em HTML virou o app que eu consulto todo dia no celular. Seis versões, cada uma respondendo a um incômodo de uso.</p>
+      <div class="stats" aria-label="Números do projeto">
+        <div style="--c:var(--c0)"><b>6</b><span>versões</span></div>
+        <div style="--c:var(--c1)"><b>5</b><span>conceitos</span></div>
+        <div style="--c:var(--c2)"><b>30</b><span>telas</span></div>
+        <div style="--c:var(--c4)"><b>151</b><span>ícones</span></div>
+      </div>
+    </div>
+    <div class="prato-hero" aria-hidden="true">
+      <div class="mancha"></div><div class="pr"></div><div class="anel" id="anel"></div>
+      <div class="ct"><b>Almoço</b><span>reconhecer pelo desenho</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="trilho-wrap">
+  <nav class="trilho" id="trilho" role="tablist" aria-label="Versões"></nav>
+</div>
+
+<main>
+  <div class="wrap"><article class="fase" id="fase"></article></div>
+
+  <section class="sec" id="lado">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Lado a lado</div>
+        <h2>A mesma tela em cada versão</h2>
+        <p>Toque numa tela para ampliar. De lá dá para abrir a versão interativa.</p>
+      </div>
+      <div class="comp" id="comp"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="perguntas">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Perguntas que viraram funções</div>
+        <h2>Cada função nasceu de uma dúvida minha</h2>
+      </div>
+      <div class="perguntas" id="perguntasGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="icones">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Biblioteca</div>
+        <h2>151 ícones, um por alimento</h2>
+        <p>Emoji não distingue brie de cottage. Cada item da dieta e cada substituto ganhou um desenho próprio, com as cores reais do alimento.</p>
+      </div>
+      <div class="amostra" id="amostra"></div>
+      <details class="ics" id="ics"><summary class="btn sec">Ver os 151</summary><div class="ic-grid" id="icGrid"></div></details>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">Cada versão é uma cópia salva do app naquele momento, em <code>historico/</code>. As telas foram capturadas dessas cópias; o celular roda a versão de verdade.</div></footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Tela ampliada">
+  <button class="fechar" id="lbX" aria-label="Fechar">×</button>
+  <button class="seta" id="lbA" aria-label="Anterior">‹</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption><div class="acoes"><button class="btn" id="lbAbrir">Abrir interativo</button></div></figure>
+  <button class="seta" id="lbP" aria-label="Próxima">›</button>
+</div>
+
+<script src="../conceitos/icones/a.js"></script>
+<script src="../conceitos/icones/b.js"></script>
+<script src="../conceitos/icones/c.js"></script>
+<script>
+const CORES = ['#FFD166','#FFB4A2','#B8E0D2','#CDB4DB','#A2D2FF','#FFC8DD'];
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const H = '../historico/';
+
+/* t: tela = [imagem, rótulo, detalhe, página, ações] */
+const FASES = [
+ { id:'v0', n:'v0', nome:'Original', cor:0,
+   titulo:'Funcionava para consultar, não para usar',
+   resumo:'Um único HTML com a dieta embutida: rolagem longa, indicadores no topo e um botão de troca em cada item.',
+   citacao:'Tem uma rolagem automática de acordo com a hora, só que eu sempre mudo a hora das refeições, então mais me atrapalha do que ajuda.',
+   porques:[['Rolagem pela hora','Os horários mudam toda semana; a automação virava ruído.'],['Topo ocupado','Indicadores e texto de perfil não ajudam a decidir o que comer agora.'],['Troca limitada','Um item por vez, sempre inteiro, e nada ficava salvo.']],
+   telas:[['v0_topo','Início','indicadores no topo','../plano-alimentar-jefferson.html',[]],['v0_lista','Refeições','rolagem longa','../plano-alimentar-jefferson.html',['rolar:640']],['v0_troca','Troca','um item, inteiro','../plano-alimentar-jefferson.html',['orig-troca']]] },
+
+ { id:'v1', n:'v1', nome:'Cinco conceitos', cor:1,
+   titulo:'Cinco jeitos de mostrar o mesmo dia',
+   resumo:'Cinco protótipos com a dieta real e as mesmas funções novas. Escolher pelo uso, não pela primeira ideia.',
+   citacao:'Ao invés de criar o app todo, ter pelo menos umas cinco opções para brincar, debater, discutir.',
+   porques:[['Visual primeiro','Era o que mais incomodava. Não valia construir função sobre um layout descartável.'],['Cinco, não um','Discutir protótipos é mais barato que corrigir um app pronto.'],['Mesmas funções','Troca de vários itens, troca parcial, trocas salvas, alterações e mercado em todos.']],
+   telas:[['v1_1-palco','Palco','uma refeição por tela',H+'v1-cinco-conceitos/1-palco.html',[]],['v1_2-editorial','Editorial','rolagem de revista',H+'v1-cinco-conceitos/2-editorial.html',[]],['v1_3-linha','Linha do dia','o dia em uma linha',H+'v1-cinco-conceitos/3-linha.html',[]],['v1_4-prato','Prato','alimentos em volta',H+'v1-cinco-conceitos/4-prato.html',[]],['v1_5-vidro','Vidro','cara de iOS',H+'v1-cinco-conceitos/5-vidro.html',[]],
+     ['v1_troca','Troca','em folha',H+'v1-cinco-conceitos/4-prato.html',['troca']],['v1_alteracoes','Alterações','original riscado',H+'v1-cinco-conceitos/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v1_mercado','Mercado','lista da semana',H+'v1-cinco-conceitos/4-prato.html',['view:mercado']]] },
+
+ { id:'v2', n:'v2', nome:'Troca em tela cheia', cor:2,
+   titulo:'Três finalistas e uma troca que não esconde nada',
+   resumo:'Palco, Prato e Vidro seguiram. A troca saiu da folha e ocupou a tela; o menu passou a sumir ao rolar.',
+   citacao:'Quando eu clico na busca, ela tinha que ficar lá no topo, e conforme vou digitando eu tenho um espaço maior para ver o resultado.',
+   porques:[['Tela cheia','A folha cobria metade da tela e o que eu queria comparar.'],['Campo no topo','Com o teclado aberto, o que importa é ver o resultado.'],['Menu que some','Navegação fixa roubava área da refeição.']],
+   telas:[['v2_troca_1-palco','Palco','troca em tela cheia',H+'v2-troca-tela-cheia/1-palco.html',['troca']],['v2_troca_4-prato','Prato','troca em tela cheia',H+'v2-troca-tela-cheia/4-prato.html',['troca']],['v2_troca_5-vidro','Vidro','troca em tela cheia',H+'v2-troca-tela-cheia/5-vidro.html',['troca']],['v2_menu_botao','Menu em botão','um dos três modos',H+'v2-troca-tela-cheia/4-prato.html',['ui:menu:botao']]] },
+
+ { id:'v3', n:'v3', nome:'Prato em transição', cor:3,
+   titulo:'O Prato vence: reconhecer pelo desenho',
+   resumo:'Carrossel de refeições, 151 ícones próprios, prato parado com a cor girando atrás e quatro formatos de lista para comparar.',
+   citacao:'A gente precisa ter um ícone específico para cada uma das coisas, e ele precisa estar grande, reconhecível.',
+   porques:[['Ícone próprio','Emoji genérico não distingue um queijo do outro.'],['Prato parado','O prato maior cortava a cena; agora só a cor gira entre refeições.'],['Quatro listas','Testar qual formato aproveita melhor os ícones novos.']],
+   telas:[['v3_prato','Prato','carrossel',H+'v3-prato-transicoes/4-prato.html',[]],['v3_lista_linhas','Linhas','lista A',H+'v3-prato-transicoes/4-prato.html',['ui:lista:linhas','rolar:430']],['v3_lista_cartoes','Cartões','lista B',H+'v3-prato-transicoes/4-prato.html',['ui:lista:cartoes','rolar:430']],['v3_lista_mosaico','Mosaico','lista C',H+'v3-prato-transicoes/4-prato.html',['ui:lista:mosaico','rolar:430']],['v3_lista_pilulas','Pílulas','lista D',H+'v3-prato-transicoes/4-prato.html',['ui:lista:pilulas','rolar:430']],['v3_troca','Troca','com os ícones',H+'v3-prato-transicoes/4-prato.html',['troca']],['v3_mercado','Mercado','com marcação',H+'v3-prato-transicoes/4-prato.html',['view:mercado']]] },
+
+ { id:'v4', n:'v4', nome:'Prato em giro', cor:4,
+   titulo:'Uso real, ajuste fino',
+   resumo:'A rolagem parou de tremer, todas as refeições passaram a girar como o almoço e as pílulas viraram a lista padrão.',
+   citacao:'Eu gostei desse do almoço: conforme eu vou virando, os ícones vão rodando junto. Parece que cria uma unidade.',
+   porques:[['Rolagem estável','O prato e o fundo tremiam ao rolar a página.'],['Um giro só','A transição do almoço criava unidade; virou a regra.'],['Mercado prático','Marcar tudo, 7 ou 14 dias e um motion leve ao riscar o item.']],
+   telas:[['v4_prato','Prato','giro em todas',H+'v4-prato-giro/4-prato.html',[]],['v4_lista','Pílulas','lista padrão',H+'v4-prato-giro/4-prato.html',['rolar:430']],['v4_mercado','Mercado','itens marcados',H+'v4-prato-giro/4-prato.html',['view:mercado','marcar']]] },
+
+ { id:'v5', n:'v5', nome:'Anel rígido', cor:5,
+   titulo:'Os ícones giram juntos, como um anel',
+   resumo:'Na refeição com mais ícones, uns batiam nos outros. Agora o anel inteiro gira e encolhe junto, sem atraso nem sobreposição.',
+   citacao:'Estão sobrepondo um ícone ao outro. A gente tem que começar a animar tudo junto para que eles não se sobreponham.',
+   porques:[['Mesmo início','Cada ícone começava num momento; os primeiros batiam nos parados.'],['Distância fixa','Girar o anel inteiro mantém o espaço entre os ícones.'],['Sem cruzar','Quem sai some antes da metade do arrasto; quem chega, depois.']],
+   telas:[['v5_prato','Café da manhã','versão atual',H+'v5-anel-rigido/4-prato.html',[]],['v5_almoco','Almoço','próxima refeição',H+'v5-anel-rigido/4-prato.html',['proxima']],['v5_troca','Troca','tela cheia',H+'v5-anel-rigido/4-prato.html',['troca']],['v5_alteracoes','Alterações','original guardada',H+'v5-anel-rigido/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v5_mercado','Mercado','7 ou 14 dias',H+'v5-anel-rigido/4-prato.html',['view:mercado']]] },
+];
+const TELAS = {}; FASES.forEach(f => f.telas.forEach(t => TELAS[t[0]] = { f, t }));
+
+const COMP = [
+  ['Dieta',      ['v0_topo','v1_4-prato','v2_menu_botao','v3_prato','v4_prato','v5_prato']],
+  ['Troca',      ['v0_troca','v1_troca','v2_troca_4-prato','v3_troca',null,'v5_troca']],
+  ['Mercado',    [null,'v1_mercado',null,'v3_mercado','v4_mercado','v5_mercado']],
+  ['Alterações', [null,'v1_alteracoes',null,null,null,'v5_alteracoes']],
+];
+
+const PERGUNTAS = [
+ ['Quanto de macarrão completa a minha porção de arroz?','Troca parcial, proporcional',0],
+ ['Quais ingredientes preciso comprar para a semana?','Mercado com as trocas',2],
+ ['Posso trocar o arroz e o feijão de uma vez?','Troca de vários itens',1],
+ ['Troquei o feijão por um tempo. E a dieta original?','Trocas salvas e restaurar',4],
+ ['O que eu mudei em relação à dieta?','Página de alterações',5],
+];
+
+/* ---------- celular ---------- */
+const espera = ms => new Promise(r => setTimeout(r, ms));
+const SEM_BARRA = '*{scrollbar-width:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}';
+let ifr = null;
+
+async function executar(acts){
+  const w = ifr.contentWindow, d = ifr.contentDocument; if(!d) return;
+  const c = s => { const e = d.querySelector(s); if(e) e.click(); };
+  for(const a of acts){
+    const [k, ...r] = a.split(':');
+    if(k==='troca') c('[data-swap]');
+    else if(k==='opcao') c('[data-opt]');
+    else if(k==='salvar') { c('#shSave'); await espera(500); }
+    else if(k==='view') c(`[data-view="${r[0]}"]`);
+    else if(k==='ui') c(`[data-ui="${r[0]}:${r[1]}"]`);
+    else if(k==='orig-troca') c('.swap');
+    else if(k==='marcar') d.querySelectorAll('.mk li>button').forEach((b,i)=>{ if(i===0||i===2||i===3) b.click(); });
+    else if(k==='proxima') { const s = d.querySelector('#dieta'); if(s) s.scrollTo({left:w.innerWidth,behavior:'smooth'}); }
+    else if(k==='rolar') { const y=+r[0]; [...d.querySelectorAll('*')].filter(e=>e.scrollHeight>e.clientHeight+50&&/auto|scroll/.test(w.getComputedStyle(e).overflowY)).forEach(e=>e.scrollTo({top:y,behavior:'smooth'})); w.scrollTo({top:y,behavior:'smooth'}); }
+    await espera(450);
+  }
+}
+
+function abrirTela(id){
+  const x = TELAS[id]; if(!x || !ifr) return;
+  try{ localStorage.removeItem('dieta-estado-v1'); }catch(e){}
+  ifr.onload = async () => {
+    try{ const st = ifr.contentDocument.createElement('style'); st.textContent = SEM_BARRA; ifr.contentDocument.head.appendChild(st); }catch(e){}
+    await espera(500); executar(x.t[4]);
+  };
+  ifr.src = x.t[3] + (x.t[3].includes('?')?'&':'?') + 't=' + Date.now();
+  document.querySelectorAll('.tela-b').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t===id)));
+  const lg = $('#legenda'); if(lg) lg.innerHTML = `<b>${esc(x.t[1])}</b> · ${esc(x.t[2])}. Funciona de verdade: toque, arraste e troque.`;
+}
+
+/* ---------- fases ---------- */
+function renderTrilho(){
+  $('#trilho').innerHTML = FASES.map(f=>`<button class="no" role="tab" data-id="${f.id}" aria-selected="false" style="--c:${CORES[f.cor]}"><i>${f.n}</i><span>${esc(f.nome)}</span></button>`).join('')
+    + `<button class="no lado" data-ir="lado"><i>⇆</i><span>Lado a lado</span></button>`;
+  $('#trilho').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>irFase(b.dataset.id,true));
+  $('#trilho').querySelector('[data-ir]').onclick=()=>$('#lado').scrollIntoView({behavior:'smooth'});
+}
+const idx = id => FASES.findIndex(f=>f.id===id);
+
+function irFase(id, rolar, tela){
+  const f = FASES[idx(id)]; if(!f) return;
+  $('#trilho').querySelectorAll('[data-id]').forEach(b=>{ const on=b.dataset.id===id; b.setAttribute('aria-selected',String(on)); if(on) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); });
+  const art = $('#fase'); art.style.setProperty('--c', CORES[f.cor]);
+  const ant = FASES[idx(id)-1], prox = FASES[idx(id)+1];
+  art.innerHTML = `
+   <div class="fase-grid">
+     <div class="fase-txt">
+       <div class="eyebrow">${esc(f.n)} · ${esc(f.nome)}</div>
+       <h2>${esc(f.titulo)}</h2>
+       <p class="res">${esc(f.resumo)}</p>
+       <div class="citacao">“${esc(f.citacao)}”<cite>O que eu pedi, levemente editado.</cite></div>
+       <ul class="porques">${f.porques.map(p=>`<li><b>${esc(p[0])}</b>${esc(p[1])}</li>`).join('')}</ul>
+       <div class="telas-h"><div class="eyebrow">Telas desta versão</div><small>Toque para abrir no celular</small></div>
+       <div class="telas">${f.telas.map(t=>`<button class="tela-b" data-t="${t[0]}" aria-pressed="false"><div class="th"><img src="telas/${t[0]}.jpg" alt="${esc(t[1])}" loading="lazy"></div><span>${esc(t[1])}<small>${esc(t[2])}</small></span></button>`).join('')}</div>
+       <div class="nav-fase">${ant?`<button class="btn sec" data-go="${ant.id}">← ${esc(ant.n)}</button>`:''}${prox?`<button class="btn" data-go="${prox.id}">${esc(prox.n)} · ${esc(prox.nome)} →</button>`:''}</div>
+     </div>
+     <div class="lado-fone">
+       <div class="fone"><div class="tela"><iframe id="ifr" title="Versão interativa"></iframe></div></div>
+       <p class="legenda" id="legenda"></p>
+     </div>
+   </div>`;
+  ifr = $('#ifr');
+  art.querySelectorAll('.tela-b').forEach(b=>b.onclick=()=>abrirTela(b.dataset.t));
+  art.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>irFase(b.dataset.go,true));
+  abrirTela(tela || f.telas[0][0]);
+  history.replaceState(null,'','#'+id);
+  if(rolar) setTimeout(()=>art.scrollIntoView({behavior:'smooth',block:'start'}),0);
+}
+
+/* ---------- lado a lado + ampliar ---------- */
+let ordem = [], atual = 0;
+function renderComp(){
+  ordem = [];
+  const cab = `<tr><th class="lin"></th>${FASES.map(f=>`<th>${esc(f.n)}<small>${esc(f.nome)}</small></th>`).join('')}</tr>`;
+  const linhas = COMP.map(([nome, ids]) => `<tr><th class="lin">${esc(nome)}</th>${ids.map(id=>{
+    if(!id) return `<td><div class="vazio">não existia</div></td>`;
+    const i = ordem.push(id)-1;
+    return `<td><button data-i="${i}" aria-label="Ampliar ${esc(nome)} ${esc(TELAS[id].f.n)}"><div class="th"><img src="telas/${id}.jpg" alt="" loading="lazy"></div></button></td>`;
+  }).join('')}</tr>`).join('');
+  $('#comp').innerHTML = `<table>${cab}${linhas}</table>`;
+  $('#comp').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>ampliar(+b.dataset.i));
+}
+function ampliar(i){
+  atual = (i + ordem.length) % ordem.length;
+  const x = TELAS[ordem[atual]];
+  $('#lbImg').src = `telas/${ordem[atual]}.jpg`;
+  $('#lbImg').alt = x.t[1];
+  $('#lbCap').innerHTML = `<b>${esc(x.f.n)} · ${esc(x.t[1])}</b>${esc(x.t[2])}`;
+  $('#lb').classList.add('on'); document.body.classList.add('travado');
+}
+const fechar = () => { $('#lb').classList.remove('on'); document.body.classList.remove('travado'); };
+$('#lbX').onclick = fechar;
+$('#lb').onclick = e => { if(e.target.id==='lb') fechar(); };
+$('#lbA').onclick = () => ampliar(atual-1);
+$('#lbP').onclick = () => ampliar(atual+1);
+$('#lbAbrir').onclick = () => { const id = ordem[atual]; fechar(); irFase(TELAS[id].f.id, true, id); };
+document.addEventListener('keydown', e => { if(!$('#lb').classList.contains('on')) return;
+  if(e.key==='Escape') fechar(); if(e.key==='ArrowLeft') ampliar(atual-1); if(e.key==='ArrowRight') ampliar(atual+1); });
+
+/* ---------- perguntas e ícones ---------- */
+function renderPerguntas(){
+  $('#perguntasGrid').innerHTML = PERGUNTAS.map(p=>`<div class="pergunta" style="--c:${CORES[p[2]]}"><q>${esc(p[0])}</q><div class="f">${esc(p[1])}</div></div>`).join('');
+}
+const svg = n => `<svg viewBox="0 0 64 64">${(window.ICONES||{})[n]||''}</svg>`;
+async function renderIcones(){
+  const hero = ['Arroz branco cozido','Feijão cozido','Uva itália','Pão de forma','Ovos de galinha','Banana'];
+  $('#anel').innerHTML = hero.map((n,i)=>`<div class="bo" style="--a:${i*60-90}deg;--c:${CORES[i]}">${svg(n)}</div>`).join('');
+  let grupos = {};
+  try{ grupos = await (await fetch('../conceitos/icones/alimentos.json')).json(); }catch(e){}
+  const todos = []; Object.entries(grupos).forEach(([g,l],gi)=>l.forEach(n=>todos.push({n,c:CORES[gi%6]})));
+  const am = ['Brie','Cottage','Mussarela','Parmesão','Abacate','Kiwi','Grão de bico cozido','Batata doce cozida','Castanha do Pará','Granola','Tapioca','Morango'];
+  $('#amostra').innerHTML = am.filter(n=>(window.ICONES||{})[n]).map((n,i)=>`<div class="ic-c" title="${esc(n)}" style="--c:${CORES[i%6]}">${svg(n)}</div>`).join('');
+  $('#ics').addEventListener('toggle', () => { if($('#icGrid').childElementCount) return;
+    $('#icGrid').innerHTML = todos.map(t=>`<div class="ic"><div class="ic-c" style="--c:${t.c}">${svg(t.n)}</div>${esc(t.n)}</div>`).join(''); });
+}
+
+renderTrilho(); renderComp(); renderPerguntas(); renderIcones();
+const h = location.hash.slice(1);
+irFase(FASES.some(f=>f.id===h) ? h : 'v0', false);
+</script>
+</body>
+</html>

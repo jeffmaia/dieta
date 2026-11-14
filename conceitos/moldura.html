@@ -97,6 +97,9 @@ a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   const comParam = (url, p) => { const x = new URL(url); x.searchParams.set(p, '1'); return x.pathname + x.search + x.hash; };
 
   document.getElementById('app').src = comParam(abs.href, 'celular');
+  /* linha do tempo na raiz do projeto: funciona no servidor local e no GitHub Pages (/dieta/...) */
+  const raiz = location.pathname.replace(/\/(conceitos|historico)\/.*$/, '/');
+  document.querySelector('.cartao').href = raiz + 'linha-do-tempo/index.html';
   document.getElementById('solto').href = comParam(abs.href, 'solto');
 
   const link = abs.origin + abs.pathname + abs.search + abs.hash;
