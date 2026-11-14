@@ -52,7 +52,7 @@ p{margin:0;text-wrap:pretty}
 .trilho{display:flex;gap:6px;overflow-x:auto;padding:12px 24px;max-width:1180px;margin:0 auto;scrollbar-width:none}
 .trilho::-webkit-scrollbar{display:none}
 .no{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:5px 15px 5px 5px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);transition:background .2s,border-color .2s}
-.no i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--c);font-family:var(--display);font-weight:600;font-size:14px}
+.no i{font-style:normal;min-width:34px;height:34px;padding:0 8px;white-space:nowrap;border-radius:999px;display:grid;place-items:center;background:var(--c);font-family:var(--display);font-weight:600;font-size:14px}
 .no span{font-size:14px;font-weight:600;white-space:nowrap}
 .no[aria-selected="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 .no.lado i{background:transparent;border:1.5px dashed var(--muted)}
@@ -75,6 +75,8 @@ p{margin:0;text-wrap:pretty}
 .tela-b img{width:100%;height:100%;object-fit:cover}
 .tela-b:hover .th{transform:translateY(-2px)}
 .tela-b[aria-pressed="true"] .th{box-shadow:0 0 0 3px var(--fg)}
+.tela-b.larga{grid-column:span 3}
+.tela-b.larga .th{aspect-ratio:16/10;height:auto}
 .tela-b span{font-size:13px;font-weight:600;line-height:1.25}
 .tela-b span small{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .nav-fase{display:flex;gap:8px;margin-top:28px}
@@ -160,9 +162,9 @@ footer .wrap{border-top:1px solid var(--line);padding-top:22px}
     <div>
       <div class="eyebrow">Estudo de caso · app de dieta</div>
       <h1>Do incômodo<br>ao&nbsp;prato</h1>
-      <p class="lead">Um plano alimentar em HTML virou o app que eu consulto todo dia no celular. Seis versões, cada uma respondendo a um incômodo de uso.</p>
+      <p class="lead">Um plano alimentar em HTML virou o app que eu consulto todo dia no celular. Doze versões, cada uma respondendo a um incômodo de uso.</p>
       <div class="stats" aria-label="Números do projeto">
-        <div style="--c:var(--c0)"><b>6</b><span>versões</span></div>
+        <div style="--c:var(--c0)"><b>12</b><span>versões</span></div>
         <div style="--c:var(--c1)"><b>5</b><span>conceitos</span></div>
         <div style="--c:var(--c2)"><b>30</b><span>telas</span></div>
         <div style="--c:var(--c4)"><b>151</b><span>ícones</span></div>
@@ -272,17 +274,18 @@ const FASES = [
    porques:[['Rolagem estável','O prato e o fundo tremiam ao rolar a página.'],['Um giro só','A transição do almoço criava unidade; virou a regra.'],['Mercado prático','Marcar tudo, 7 ou 14 dias e um motion leve ao riscar o item.']],
    telas:[['v4_prato','Prato','giro em todas',H+'v4-prato-giro/4-prato.html',[]],['v4_lista','Pílulas','lista padrão',H+'v4-prato-giro/4-prato.html',['rolar:430']],['v4_mercado','Mercado','itens marcados',H+'v4-prato-giro/4-prato.html',['view:mercado','marcar']]] },
 
- { id:'v5', n:'v5', nome:'Anel rígido', cor:5,
-   titulo:'Os ícones giram juntos, como um anel',
-   resumo:'Na refeição com mais ícones, uns batiam nos outros. Agora o anel inteiro gira e encolhe junto, sem atraso nem sobreposição.',
+ { id:'v5', n:'v5–v11', nome:'Motion', cor:5,
+   titulo:'O prato que gira, encolhe e segue o dedo',
+   resumo:'Sete versões só de movimento: os ícones giram como um anel, o prato encolhe ao rolar e, fora do celular, o app abre numa moldura de iPhone.',
    citacao:'Estão sobrepondo um ícone ao outro. A gente tem que começar a animar tudo junto para que eles não se sobreponham.',
-   porques:[['Mesmo início','Cada ícone começava num momento; os primeiros batiam nos parados.'],['Distância fixa','Girar o anel inteiro mantém o espaço entre os ícones.'],['Sem cruzar','Quem sai some antes da metade do arrasto; quem chega, depois.']],
-   telas:[['v5_prato','Café da manhã','versão atual',H+'v5-anel-rigido/4-prato.html',[]],['v5_almoco','Almoço','próxima refeição',H+'v5-anel-rigido/4-prato.html',['proxima']],['v5_troca','Troca','tela cheia',H+'v5-anel-rigido/4-prato.html',['troca']],['v5_alteracoes','Alterações','original guardada',H+'v5-anel-rigido/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v5_mercado','Mercado','7 ou 14 dias',H+'v5-anel-rigido/4-prato.html',['view:mercado']]] },
+   porques:[['Anel rígido · v5','Cada ícone começava num momento e batia nos parados. Agora o anel inteiro gira junto.'],['Moldura · v6–v7','No computador, o app abre num iPhone com QR para o celular; dá para arrastar com o mouse.'],['Prato encolhe · v8–v11','Ao rolar, o prato cede espaço à lista, encolhe pelo topo e os ícones vão para a borda.']],
+   telas:[['v5_prato','Anel rígido','v5 · café da manhã',H+'v5-anel-rigido/4-prato.html',[]],['v5_almoco','Giro','v5 · próxima refeição',H+'v5-anel-rigido/4-prato.html',['proxima']],['v6_moldura','Moldura de iPhone','v6 · fora do celular',null,[],'larga'],['v8_rolar300','Encolhe ao rolar','v8 · até 50%',H+'v8-encolhe-ao-rolar/4-prato.html',['rolar:300']],['v9_rolar300','Prato preso','v9 · encolhe parado',H+'v9-prato-preso-encolhe/4-prato.html',['rolar:300']],['v10_rolar300','Encolhe pelo topo','v10 · lista sobe junto',H+'v10-encolhe-pelo-topo/4-prato.html',['rolar:300']],['v11_rolar180','Ícones na borda','v11 · versão atual',H+'v11-icones-na-borda/4-prato.html',['rolar:180']],['v5_troca','Troca','tela cheia',H+'v11-icones-na-borda/4-prato.html',['troca']],['v5_alteracoes','Alterações','original guardada',H+'v11-icones-na-borda/4-prato.html',['troca','opcao','salvar','view:alteracoes']],['v5_mercado','Mercado','7 ou 14 dias',H+'v11-icones-na-borda/4-prato.html',['view:mercado']]] },
 ];
 const TELAS = {}; FASES.forEach(f => f.telas.forEach(t => TELAS[t[0]] = { f, t }));
 
 const COMP = [
   ['Dieta',      ['v0_topo','v1_4-prato','v2_menu_botao','v3_prato','v4_prato','v5_prato']],
+  ['Ao rolar',   ['v0_lista',null,null,'v3_lista_pilulas','v4_lista','v11_rolar180']],
   ['Troca',      ['v0_troca','v1_troca','v2_troca_4-prato','v3_troca',null,'v5_troca']],
   ['Mercado',    [null,'v1_mercado',null,'v3_mercado','v4_mercado','v5_mercado']],
   ['Alterações', [null,'v1_alteracoes',null,null,null,'v5_alteracoes']],
@@ -314,7 +317,7 @@ async function executar(acts){
     else if(k==='orig-troca') c('.swap');
     else if(k==='marcar') d.querySelectorAll('.mk li>button').forEach((b,i)=>{ if(i===0||i===2||i===3) b.click(); });
     else if(k==='proxima') { const s = d.querySelector('#dieta'); if(s) s.scrollTo({left:w.innerWidth,behavior:'smooth'}); }
-    else if(k==='rolar') { const y=+r[0]; [...d.querySelectorAll('*')].filter(e=>e.scrollHeight>e.clientHeight+50&&/auto|scroll/.test(w.getComputedStyle(e).overflowY)).forEach(e=>e.scrollTo({top:y,behavior:'smooth'})); w.scrollTo({top:y,behavior:'smooth'}); }
+    else if(k==='rolar') { const y=+r[0]; [...d.querySelectorAll('*')].filter(e=>e.scrollHeight>e.clientHeight+50&&/auto|scroll/.test(w.getComputedStyle(e).overflowY)).forEach(e=>{ e.scrollTop=y; }); w.scrollTo(0,y); }
     await espera(450);
   }
 }
@@ -354,7 +357,7 @@ function irFase(id, rolar, tela){
        <div class="citacao">“${esc(f.citacao)}”<cite>O que eu pedi, levemente editado.</cite></div>
        <ul class="porques">${f.porques.map(p=>`<li><b>${esc(p[0])}</b>${esc(p[1])}</li>`).join('')}</ul>
        <div class="telas-h"><div class="eyebrow">Telas desta versão</div><small>Toque para abrir no celular</small></div>
-       <div class="telas">${f.telas.map(t=>`<button class="tela-b" data-t="${t[0]}" aria-pressed="false"><div class="th"><img src="telas/${t[0]}.jpg" alt="${esc(t[1])}" loading="lazy"></div><span>${esc(t[1])}<small>${esc(t[2])}</small></span></button>`).join('')}</div>
+       <div class="telas">${f.telas.map(t=>`<button class="tela-b${t[5]?' larga':''}" data-t="${t[0]}" aria-pressed="false"><div class="th"><img src="telas/${t[0]}.jpg" alt="${esc(t[1])}" loading="lazy"></div><span>${esc(t[1])}<small>${esc(t[2])}</small></span></button>`).join('')}</div>
        <div class="nav-fase">${ant?`<button class="btn sec" data-go="${ant.id}">← ${esc(ant.n)}</button>`:''}${prox?`<button class="btn" data-go="${prox.id}">${esc(prox.n)} · ${esc(prox.nome)} →</button>`:''}</div>
      </div>
      <div class="lado-fone">
@@ -363,7 +366,7 @@ function irFase(id, rolar, tela){
      </div>
    </div>`;
   ifr = $('#ifr');
-  art.querySelectorAll('.tela-b').forEach(b=>b.onclick=()=>abrirTela(b.dataset.t));
+  art.querySelectorAll('.tela-b').forEach(b=>b.onclick=()=> TELAS[b.dataset.t].t[3] ? abrirTela(b.dataset.t) : ampliar(0,[b.dataset.t]));
   art.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>irFase(b.dataset.go,true));
   abrirTela(tela || f.telas[0][0]);
   history.replaceState(null,'','#'+id);
@@ -371,9 +374,9 @@ function irFase(id, rolar, tela){
 }
 
 /* ---------- lado a lado + ampliar ---------- */
-let ordem = [], atual = 0;
+let ordemComp = [], ordem = [], atual = 0;
 function renderComp(){
-  ordem = [];
+  ordem = ordemComp;
   const cab = `<tr><th class="lin"></th>${FASES.map(f=>`<th>${esc(f.n)}<small>${esc(f.nome)}</small></th>`).join('')}</tr>`;
   const linhas = COMP.map(([nome, ids]) => `<tr><th class="lin">${esc(nome)}</th>${ids.map(id=>{
     if(!id) return `<td><div class="vazio">não existia</div></td>`;
@@ -383,7 +386,8 @@ function renderComp(){
   $('#comp').innerHTML = `<table>${cab}${linhas}</table>`;
   $('#comp').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>ampliar(+b.dataset.i));
 }
-function ampliar(i){
+function ampliar(i, lista){
+  if(lista) ordem = lista; else if(!$('#lb').classList.contains('on')) ordem = ordemComp;
   atual = (i + ordem.length) % ordem.length;
   const x = TELAS[ordem[atual]];
   $('#lbImg').src = `telas/${ordem[atual]}.jpg`;
@@ -396,7 +400,7 @@ $('#lbX').onclick = fechar;
 $('#lb').onclick = e => { if(e.target.id==='lb') fechar(); };
 $('#lbA').onclick = () => ampliar(atual-1);
 $('#lbP').onclick = () => ampliar(atual+1);
-$('#lbAbrir').onclick = () => { const id = ordem[atual]; fechar(); irFase(TELAS[id].f.id, true, id); };
+$('#lbAbrir').onclick = () => { const id = ordem[atual]; fechar(); irFase(TELAS[id].f.id, true, TELAS[id].t[3] ? id : null); };
 document.addEventListener('keydown', e => { if(!$('#lb').classList.contains('on')) return;
   if(e.key==='Escape') fechar(); if(e.key==='ArrowLeft') ampliar(atual-1); if(e.key==='ArrowRight') ampliar(atual+1); });
 
