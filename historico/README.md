@@ -16,3 +16,4 @@ Para salvar uma nova versão: `historico/salvar.sh <versão> "descrição"`.
 - **v7-arrastar-mouse** (2026-11-14 08:23): Sem barras de rolagem e sem notch na moldura; clicar e arrastar com o mouse troca de refeição — [abrir](v7-arrastar-mouse/index.html)
 - **v8-encolhe-ao-rolar** (2026-11-14 08:48): Prato encolhe até 50% e hora some ao rolar; sem zoom nem rolagem horizontal; paginador rola junto; página do tamanho da refeição — [abrir](v8-encolhe-ao-rolar/index.html)
 - **v9-prato-preso-encolhe** (2026-11-14 08:50): Prato fica parado enquanto encolhe até a metade e depois sobe com a página, sem vão até a lista — [abrir](v9-prato-preso-encolhe/index.html)
+- **v10-encolhe-pelo-topo** (2026-11-14 08:56): Prato encolhe pelo topo com a lista subindo junto; ícones encolhem menos (85/80/70% no menu) — [abrir](v10-encolhe-pelo-topo/index.html)
