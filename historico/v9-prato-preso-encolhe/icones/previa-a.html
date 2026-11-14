@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><title>Prévia a</title><style>body{margin:0;font:12px sans-serif}section{padding:12px}.grid{display:flex;flex-wrap:wrap;gap:12px}.i{width:110px;text-align:center}.s .i{width:40px}.s span{display:none}svg{display:block;margin:auto}h3{margin:0 0 8px}</style><body></body><script src="a.js"></script><script>
+const bgs=[["#FFFFFF","#222"],["#1E1E24","#eee"],["#F2994A","#222"],["#6FB5A3","#222"]];
+for(const [bg,fg] of bgs)for(const sz of [96,28]){const s=document.createElement('section');s.style.background=bg;s.style.color=fg;s.className=sz==28?'s':'';
+s.innerHTML='<h3>'+bg+' '+sz+'px</h3><div class="grid">'+Object.entries(ICONES).map(([n,v])=>'<div class="i"><svg width="'+sz+'" height="'+sz+'" viewBox="0 0 64 64">'+v+'</svg><span>'+n+'</span></div>').join('')+'</div>';document.body.appendChild(s);}
+</script>

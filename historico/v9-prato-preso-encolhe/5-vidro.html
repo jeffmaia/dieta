@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script src="moldura.js"></script>
+<title>Conceito 5 · Vidro</title>
+<link rel="stylesheet" href="base.css">
+<style>
+:root{
+  --bg:#EDE7F6;--fg:#1C1530;--muted:#6E6686;--line:rgba(28,21,48,.12);--surface:#F7F4FC;
+  --accent:#5B3DF5;--accent-fg:#fff;--radius:18px;--sheet-r:34px;
+  --bar:rgba(255,255,255,.72);--bar-fg:#6E6686;--bar-on:#1C1530;--bar-on-fg:#fff;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",system-ui,sans-serif;--display-w:800;
+}
+body::before{content:"";position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(60% 45% at 12% 8%,#FFC9B5 0,transparent 70%),radial-gradient(55% 45% at 95% 20%,#B9C6FF 0,transparent 70%),
+  radial-gradient(70% 50% at 60% 100%,#C8F0DC 0,transparent 70%),#EDE7F6}
+#dieta{max-width:560px;margin:0 auto;padding:calc(30px + env(safe-area-inset-top)) 0 calc(130px + env(safe-area-inset-bottom))}
+.topo{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:0;padding:0 20px}
+.refs{display:flex;gap:8px;overflow-x:auto;padding:20px 20px 6px;scrollbar-width:none}
+.refs::-webkit-scrollbar{display:none}
+.refs button{flex:0 0 auto;min-height:46px;padding:0 16px;border-radius:999px;font-size:14.5px;font-weight:600;white-space:nowrap;
+  background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;gap:7px}
+.refs button[aria-pressed="true"]{background:var(--fg);color:#fff}
+.refs i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.refs button[aria-pressed="true"] i{background:#B7A6FF}
+.vidro{margin:14px 14px 0;border-radius:32px;background:rgba(255,255,255,.58);-webkit-backdrop-filter:blur(26px) saturate(1.4);backdrop-filter:blur(26px) saturate(1.4);
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 18px 40px rgba(60,40,120,.12);padding:22px 20px 12px}
+.v-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.v-h h2{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:0}
+.v-h span{font-size:13px;color:var(--muted);font-weight:600}
+.macros{display:flex;gap:8px;margin:16px 0 8px}
+.macros div{flex:1;border-radius:18px;background:rgba(255,255,255,.6);padding:10px 12px}
+.macros b{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em}
+.macros span{font-size:11.5px;color:var(--muted);font-weight:600}
+.row{display:flex;align-items:center;gap:13px;width:100%;padding:11px 0;border-top:1px solid var(--line);min-height:62px}
+.row .e{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.75);display:grid;place-items:center;font-size:23px;flex:0 0 auto}
+.row .n{flex:1;min-width:0;font-size:16.5px;font-weight:600;line-height:1.2}
+.row .n small{display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-top:1px}
+.row b{font-size:14.5px;font-weight:700;text-align:right;max-width:36%}
+.row svg{width:17px;height:17px;color:var(--accent);flex:0 0 auto}
+.row.fixo .n,.row.fixo b{color:var(--muted);font-weight:500}
+.row.alt .e{background:var(--accent)}
+.row.alt .n,.row.alt b{color:var(--accent)}
+.v-f{display:flex;gap:10px;padding:10px 0 8px;border-top:1px solid var(--line)}
+.v-f button{flex:1;min-height:48px;border-radius:16px;font-weight:700;font-size:14.5px;text-align:center}
+.v-f .p{background:var(--accent);color:#fff}
+.v-f .s{background:rgba(255,255,255,.7)}
+.dia{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;padding:16px 8px}
+.dia b{display:block;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.dia span{font-size:11px;color:var(--muted);font-weight:600}
+.dia-t{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:0}
+</style>
+</head>
+<body>
+<main id="dieta"></main>
+<script src="dados.js"></script>
+<script src="icones/a.js"></script><script src="icones/b.js"></script><script src="icones/c.js"></script>
+<script src="motor.js"></script>
+<script>
+let ativa = 0;
+function renderDieta(D){
+  const ms = D.meals(), m = ms[ativa], el = document.getElementById('dieta');
+  const sx = el.querySelector('.refs') ? el.querySelector('.refs').scrollLeft : 0;
+  const prim = m.itens.find(it => it.trocavel);
+  el.innerHTML = `<h1 class="topo">Dieta</h1>
+    <div class="refs" role="group" aria-label="Refeição">${ms.map(x => `<button data-ref="${x.i}" aria-pressed="${x.i===ativa}">${x.nome}${x.alterada?'<i aria-label="alterada"></i>':''}</button>`).join('')}</div>
+    <section class="vidro">
+      <div class="v-h"><h2>${m.nome}</h2><span>${m.hora}</span></div>
+      <div class="macros"><div><b>${m.kcal}</b><span>kcal</span></div><div><b>${m.carb} g</b><span>carboidrato</span></div><div><b>≈${m.prot} g</b><span>proteína</span></div></div>
+      ${m.itens.map(it => it.linhas.map(l => {
+        const inner = `<span class="e">${l.emoji}</span><span class="n">${D.esc(l.nome)}${l.medida?`<small>${l.medida}</small>`:l.alt?`<small>${D.esc(l.alt)}</small>`:''}</span><b>${l.txt}</b>${it.trocavel?D.ico.swap:''}`;
+        const cls = `row ${it.fixo?'fixo':''} ${l.orig?'':'alt'}`;
+        return it.trocavel ? `<button class="${cls}" data-swap="${it.id}">${inner}</button>` : `<div class="${cls}">${inner}</div>`;
+      }).join('')).join('')}
+      <div class="v-f">${prim?`<button class="p" data-swap="${prim.id}">Trocar itens</button>`:''}${m.alterada?`<button class="s" data-reset-meal="${m.i}">Restaurar</button>`:''}</div>
+    </section>
+    <section class="vidro"><p class="dia-t">No dia inteiro</p>
+      <div class="dia">${D.indicadores().map(i => `<div><b>${i.v}</b><span>${i.u} ${i.l}</span></div>`).join('')}</div>
+    </section>`;
+  el.querySelector('.refs').scrollLeft = sx;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ref]');
+  if (b) { ativa = +b.dataset.ref; renderDieta(D); }
+});
+D.init();
+</script>
+</body>
+</html>

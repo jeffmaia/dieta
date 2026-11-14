@@ -117,13 +117,16 @@ body{font-feature-settings:"tnum" 1}
 .pager button{position:relative;width:9px;height:9px;border-radius:5px;background:var(--fg);opacity:.2;padding:0;transition:width .25s cubic-bezier(.32,.72,0,1),opacity .2s}
 .pager button::after{content:"";position:absolute;inset:-14px -3px}
 .pager button.on{width:26px;opacity:.85}
-/* ao rolar: prato, ícones e fundo encolhem até a metade; hora e kcal somem */
+/* ao rolar: o prato fica parado no lugar enquanto encolhe até a metade (a hora some);
+   quando chega no tamanho mínimo, sobe junto com o resto da página.
+   --P = metade do prato: é o quanto a lista sobe enquanto o prato encolhe, então eles nunca se encostam */
+:root{--P:172px}
 .cena{transform-origin:50% 0}
-@keyframes encolhe{to{transform:scale(.5)}}
+@keyframes encolhe{to{transform:translateY(var(--P)) scale(.5)}}
 @keyframes apaga{to{opacity:0}}
 @supports (animation-timeline: scroll()){
-  #palco .cena,.slide .cena{animation:encolhe linear both;animation-timeline:scroll(root block);animation-range:0 320px}
-  #palco .centros{animation:apaga linear both;animation-timeline:scroll(root block);animation-range:0 160px}
+  #palco .cena,.slide .cena{animation:encolhe linear both;animation-timeline:scroll(root block);animation-range:0 var(--P)}
+  #palco .centros{animation:apaga linear both;animation-timeline:scroll(root block);animation-range:0 calc(var(--P) * .6)}
 }
 body:not([data-view="dieta"]) .pager,body:not([data-view="dieta"]) #palco{display:none}
 /* camada visual fixa por cima do carrossel; os toques passam para os botões invisíveis da tela */
@@ -284,15 +287,18 @@ function quadro(){
   });
 }
 car.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(quadro); }, { passive: true });
+const medirP = () => document.documentElement.style.setProperty('--P', (Math.min(innerWidth * .88, 344) * .5).toFixed(1) + 'px');
+medirP(); addEventListener('resize', medirP);
 addEventListener('resize', quadro);
 /* navegadores sem animação ligada à rolagem: mesmo efeito por script */
 if (!(window.CSS && CSS.supports('animation-timeline: scroll()'))) {
   let r2 = 0;
   const encolher = () => {
     r2 = 0;
-    const y = Math.max(0, scrollY), k = cl(y / 320);
-    document.querySelectorAll('#palco .cena,.slide .cena').forEach(c => { c.style.transform = `scale(${1 - .5 * k})`; });
-    const cs = document.querySelector('#palco .centros'); if (cs) cs.style.opacity = 1 - cl(y / 160);
+    const P = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--P')) || 172;
+    const y = Math.max(0, scrollY), k = cl(y / P);
+    document.querySelectorAll('#palco .cena,.slide .cena').forEach(c => { c.style.transform = `translateY(${k * P}px) scale(${1 - .5 * k})`; });
+    const cs = document.querySelector('#palco .centros'); if (cs) cs.style.opacity = 1 - cl(y / (P * .6));
   };
   addEventListener('scroll', () => { if (!r2) r2 = requestAnimationFrame(encolher); }, { passive: true });
   const rd = renderDieta; renderDieta = D => { rd(D); encolher(); };
