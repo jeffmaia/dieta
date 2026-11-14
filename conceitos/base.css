@@ -171,3 +171,10 @@ body[data-troca="cheia"] .sh-grab{visibility:hidden;margin-top:4px}
 
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
 .sh-opt .e .ic,.row .e .ic,.alt-to .ic,.mk .ic{width:1.15em;height:1.15em}
+
+/* dentro da moldura de celular: sem barras de rolagem */
+html.emoldura,html.emoldura *{scrollbar-width:none}
+html.emoldura ::-webkit-scrollbar{display:none;width:0;height:0}
+/* arrastar com o mouse entre as refeições */
+@media (hover:hover) and (pointer:fine){#dieta{cursor:grab}}
+body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none;-webkit-user-select:none}

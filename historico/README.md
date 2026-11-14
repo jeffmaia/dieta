@@ -13,3 +13,4 @@ Para salvar uma nova versão: `historico/salvar.sh <versão> "descrição"`.
 - **v4-prato-giro** (2026-11-14 07:51): Rolagem sem tremor, transição em giro sem sobrepor, pílulas como padrão, mercado com motion, marcar tudo e 7/14 dias — [abrir](v4-prato-giro/index.html)
 - **v5-anel-rigido** (2026-11-14 07:57): Ícones do prato giram juntos como um anel, sem atraso nem sobreposição — [abrir](v5-anel-rigido/index.html)
 - **v6-moldura-celular** (2026-11-14 08:17): Fora do celular, abre dentro de uma moldura de iPhone com QR para o celular e link para a linha do tempo — [abrir](v6-moldura-celular/index.html)
+- **v7-arrastar-mouse** (2026-11-14 08:23): Sem barras de rolagem e sem notch na moldura; clicar e arrastar com o mouse troca de refeição — [abrir](v7-arrastar-mouse/index.html)

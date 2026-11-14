@@ -336,8 +336,56 @@ function enviarMercado() {
   else toast('Não foi possível copiar aqui.');
 }
 
+/* ---------- arrastar com o mouse ----------
+   No toque o navegador já desliza sozinho. Com mouse, clicar e arrastar move o carrossel,
+   e ao soltar ele assenta na refeição mais próxima (ou na seguinte, se o gesto foi rápido). */
+function arrastar(el) {
+  let ativo = false, mov = false, x0 = 0, s0 = 0, lx = 0, lt = 0, v = 0;
+  el.addEventListener('dragstart', e => e.preventDefault());
+  el.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || el.scrollWidth <= el.clientWidth) return;
+    ativo = true; mov = false; x0 = lx = e.clientX; s0 = el.scrollLeft; lt = performance.now(); v = 0;
+  });
+  el.addEventListener('pointermove', e => {
+    if (!ativo) return;
+    const dx = e.clientX - x0;
+    /* só captura o ponteiro depois que virou arrasto, senão os cliques nos botões deixam de funcionar */
+    if (!mov && Math.abs(dx) > 6) { mov = true; el.style.scrollSnapType = 'none'; document.body.classList.add('arrastando'); try { el.setPointerCapture(e.pointerId); } catch (_) {} }
+    if (!mov) return;
+    el.scrollLeft = s0 - dx;
+    const t = performance.now(); v = (e.clientX - lx) / Math.max(1, t - lt); lx = e.clientX; lt = t;
+  });
+  const soltar = () => {
+    if (!ativo) return;
+    ativo = false;
+    if (!mov) return;
+    document.body.classList.remove('arrastando');
+    const W = el.clientWidth, n = Math.round((el.scrollWidth - W) / W);
+    let alvo = Math.round(el.scrollLeft / W);
+    if (Math.abs(v) > .35) alvo = Math.round(s0 / W) + (v < 0 ? 1 : -1);
+    alvo = Math.max(0, Math.min(n, alvo));
+    /* assenta com uma animação própria (o scrollTo suave do navegador às vezes não roda logo após o arrasto) */
+    const de = el.scrollLeft, para = alvo * W, t0 = performance.now(), dur = 420;
+    const passo = agora => {
+      const p = Math.min(1, (agora - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.scrollLeft = de + (para - de) * e;
+      if (p < 1) requestAnimationFrame(passo); else el.style.scrollSnapType = '';
+    };
+    requestAnimationFrame(passo);
+    /* o clique que vem logo depois de soltar não abre nada */
+    const bloqueia = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    addEventListener('click', bloqueia, { capture: true, once: true });
+    setTimeout(() => removeEventListener('click', bloqueia, { capture: true }), 60);
+  };
+  el.addEventListener('pointerup', soltar);
+  addEventListener('pointerup', soltar);
+  el.addEventListener('pointercancel', soltar);
+  el.addEventListener('lostpointercapture', soltar);
+}
+
 /* ---------- eventos ---------- */
 function ligar() {
+  if ($('dieta')) arrastar($('dieta'));
   document.addEventListener('click', e => {
     if (!e.target.closest('#opc,#tbOpc')) $('opc').classList.remove('on');
     if (!e.target.closest('#tabbar,#opc')) fecharMenu();

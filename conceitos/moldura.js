@@ -6,6 +6,8 @@
    ?solto=1 abre sem moldura; ?celular=1 é usado pela própria moldura para não entrar em loop. */
 (function () {
   var q = new URLSearchParams(location.search);
+  /* dentro da moldura: sem barras de rolagem, como num celular */
+  if (q.has('celular')) document.documentElement.classList.add('emoldura');
   if (q.has('celular') || q.has('solto')) return;
   try { if (window.top !== window) return; } catch (e) { return; }
 
